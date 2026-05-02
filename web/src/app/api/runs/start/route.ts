@@ -11,6 +11,7 @@ export async function POST(request: Request) {
       model?: string;
       preset?: string;
       boards?: number;
+      reasoningEffort?: string;
     };
     if (!body.model) {
       return NextResponse.json({ error: "Model is required." }, { status: 400 });
@@ -19,6 +20,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Custom runs require a positive board count." }, { status: 400 });
     }
     const args = ["prepare-run", "--model", body.model, "--preset", body.preset ?? "smoke"];
+    if (body.reasoningEffort) {
+      args.push("--reasoning-effort", body.reasoningEffort);
+    }
     if (typeof body.boards === "number" && Number.isFinite(body.boards)) {
       args.push("--boards", String(body.boards));
     }

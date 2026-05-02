@@ -40,16 +40,16 @@ function premiumSquare(row: number, col: number) {
   const word = WORD_MULTIPLIERS[row][col];
   const letter = LETTER_MULTIPLIERS[row][col];
   if (word === 3) {
-    return { label: "TW", className: "bg-[#9bb8d6] text-[#425563]" };
+    return { label: "TW", className: "bg-[color:var(--premium-tw-bg)] text-[color:var(--premium-tw-fg)]" };
   }
   if (word === 2) {
-    return { label: "DW", className: "bg-[#d8e5f2] text-[#425563]" };
+    return { label: "DW", className: "bg-[color:var(--premium-dw-bg)] text-[color:var(--premium-dw-fg)]" };
   }
   if (letter === 3) {
-    return { label: "TL", className: "bg-[#6f95bd] text-[#f8fbff]" };
+    return { label: "TL", className: "bg-[color:var(--premium-tl-bg)] text-[color:var(--premium-tl-fg)]" };
   }
   if (letter === 2) {
-    return { label: "DL", className: "bg-[#e8f0f8] text-[#425563]" };
+    return { label: "DL", className: "bg-[color:var(--premium-dl-bg)] text-[color:var(--premium-dl-fg)]" };
   }
   return null;
 }
@@ -81,10 +81,10 @@ export function BoardView({
 }) {
   const { boardMap, highlightMap } = buildMaps(board, highlightPlacements);
   const baseCellClass =
-    "grid aspect-square min-h-6 place-items-center rounded-[7px] border font-extrabold max-[840px]:min-h-5 max-[840px]:rounded-[6px]";
+    "grid aspect-square min-h-6 place-items-center rounded-[7px] border border-[color:var(--line)] font-extrabold max-[840px]:min-h-5 max-[840px]:rounded-[6px]";
 
   return (
-    <div className="grid gap-[14px]">
+    <div className="grid w-full max-w-[420px] gap-[14px]">
       <div className="grid w-full [grid-template-columns:repeat(15,minmax(0,1fr))] gap-[3px] max-[840px]:gap-[2px]">
         {Array.from({ length: 15 * 15 }).map((_, index) => {
           const row = Math.floor(index / 15);
@@ -99,14 +99,14 @@ export function BoardView({
             classes.push(
               highlightTone === "optimal"
                 ? "border-[#256f3d] bg-[#2f8f4e] text-[#f7fff9]"
-                : "border-[rgba(65,107,150,0.92)] bg-[rgba(65,107,150,0.78)] text-white",
+                : "border-[color:var(--board-model-border)] bg-[color:var(--board-model)] text-white",
             );
           } else if (base) {
-            classes.push("border-[rgba(25,36,45,0.08)] bg-[rgba(154,167,177,0.55)]");
+            classes.push("bg-[color:var(--board-existing)]");
           } else if (premium) {
-            classes.push("border-[rgba(25,36,45,0.08)]", premium.className);
+            classes.push(premium.className);
           } else {
-            classes.push("border-[rgba(25,36,45,0.08)] bg-[#fff8ea]");
+            classes.push("bg-[color:var(--board-empty)]");
           }
 
           return (
@@ -128,7 +128,7 @@ export function BoardView({
         {rack.split("").map((letter, index) => (
           <span
             key={`${letter}-${index}`}
-            className="min-w-[34px] rounded-xl border border-[color:var(--line)] bg-[color:var(--surface-strong)] px-2.5 py-2 text-center font-bold [font-family:var(--font-geist-mono)]"
+            className="grid h-9 w-9 place-items-center rounded-xl border border-[color:var(--line)] bg-[color:var(--surface-strong)] text-center font-bold [font-family:var(--font-geist-mono)]"
           >
             {letter}
           </span>

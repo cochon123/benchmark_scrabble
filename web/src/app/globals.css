@@ -1,18 +1,77 @@
 @import "tailwindcss";
 
 :root {
+  color-scheme: light dark;
   --background: #f6f8fb;
+  --background-top: #fbfcfe;
   --surface: rgba(255, 255, 255, 0.92);
   --surface-strong: #ffffff;
+  --surface-soft: rgba(255, 255, 255, 0.72);
+  --surface-subtle: rgba(255, 255, 255, 0.6);
+  --surface-input: rgba(255, 255, 255, 0.86);
+  --surface-pre: rgba(241, 245, 249, 0.8);
   --ink: #16202a;
   --muted: #5f7285;
   --line: rgba(22, 32, 42, 0.12);
   --accent: #24476a;
   --accent-dark: #162d44;
+  --accent-contrast: #f7fbff;
   --green: #4d8a62;
   --blue: #416b96;
   --grey: #9aa7b1;
   --shadow: 0 18px 48px rgba(27, 43, 59, 0.08);
+  --chart-grid: rgba(22, 32, 42, 0.08);
+  --chart-axis: #7a8e9b;
+  --chart-series: #4b6b8f;
+  --chart-point: #17324d;
+  --board-empty: #fff8ea;
+  --board-existing: rgba(154, 167, 177, 0.55);
+  --board-model: rgba(65, 107, 150, 0.78);
+  --board-model-border: rgba(65, 107, 150, 0.92);
+  --premium-tw-bg: #9bb8d6;
+  --premium-tw-fg: #425563;
+  --premium-dw-bg: #d8e5f2;
+  --premium-dw-fg: #425563;
+  --premium-tl-bg: #6f95bd;
+  --premium-tl-fg: #f8fbff;
+  --premium-dl-bg: #e8f0f8;
+  --premium-dl-fg: #425563;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0e1722;
+    --background-top: #131f2d;
+    --surface: rgba(18, 28, 40, 0.9);
+    --surface-strong: #182434;
+    --surface-soft: rgba(24, 36, 52, 0.78);
+    --surface-subtle: rgba(24, 36, 52, 0.68);
+    --surface-input: rgba(22, 34, 49, 0.9);
+    --surface-pre: rgba(11, 18, 28, 0.9);
+    --ink: #edf4fb;
+    --muted: #9cb1c5;
+    --line: rgba(185, 203, 222, 0.16);
+    --accent: #5b8fc3;
+    --accent-dark: #3a6f9f;
+    --accent-contrast: #f5fbff;
+    --shadow: 0 20px 50px rgba(1, 7, 14, 0.45);
+    --chart-grid: rgba(185, 203, 222, 0.12);
+    --chart-axis: #8ca2b8;
+    --chart-series: #7ca8d3;
+    --chart-point: #b5d3f3;
+    --board-empty: #203043;
+    --board-existing: rgba(113, 132, 151, 0.62);
+    --board-model: #f01fd9d6;
+    --board-model-border: rgba(107, 154, 203, 0.95);
+    --premium-tw-bg: #315276;
+    --premium-tw-fg: #edf6ff;
+    --premium-dw-bg: #2a415d;
+    --premium-dw-fg: #dbe8f5;
+    --premium-tl-bg: #4b78a8;
+    --premium-tl-fg: #f8fbff;
+    --premium-dl-bg: #25384d;
+    --premium-dl-fg: #dbe8f5;
+  }
 }
 
 html {
@@ -27,7 +86,7 @@ body {
 
 body {
   min-height: 100%;
-  background: linear-gradient(180deg, #fbfcfe 0%, var(--background) 100%);
+  background: linear-gradient(180deg, var(--background-top) 0%, var(--background) 100%);
   background-attachment: fixed;
   background-repeat: no-repeat;
   color: var(--ink);

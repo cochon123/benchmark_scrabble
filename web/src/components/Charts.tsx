@@ -2,10 +2,15 @@
 
 import { useState } from "react";
 
+import { ModelBadge } from "@/components/ModelBadge";
 import { badgeTheme } from "@/lib/badges";
 import { formatDate, formatNumber, formatPercent } from "@/lib/format";
 import { LeaderboardRow } from "@/lib/types";
 import { mutedClass, panelClass, panelHeaderClass, runListClass, secondaryButtonClass, titleClass } from "@/lib/ui";
+
+function stripCompanyPrefix(name: string) {
+  return name.replace(/^[^:]+:\s*/, "");
+}
 
 type TooltipState = {
   x: number;
@@ -75,7 +80,7 @@ function ChartTooltip({
         <div className="flex h-full flex-col gap-1 rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-strong)]/95 px-3 py-2 text-[color:var(--ink)] shadow-[var(--shadow)] backdrop-blur-sm">
           <div className="flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />
-            <p className="text-[0.86rem] font-semibold leading-5">{tooltip.title}</p>
+            <p className="line-clamp-2 text-[0.86rem] font-semibold leading-5">{tooltip.title}</p>
           </div>
           <div className="grid gap-0.5">
             {tooltip.lines.map((line) => (
@@ -91,8 +96,6 @@ function ChartTooltip({
 }
 
 export function LeaderboardBars({ rows }: { rows: LeaderboardRow[] }) {
-  const scoreTicks = [0, 25, 50, 75, 100];
-
   return (
     <div className={panelClass}>
       <div className={panelHeaderClass}>
@@ -101,20 +104,14 @@ export function LeaderboardBars({ rows }: { rows: LeaderboardRow[] }) {
           Export CSV
         </a>
       </div>
-      <div className="mb-3 grid grid-cols-5 gap-2 pl-1 text-[0.72rem] font-medium text-[color:var(--muted)]">
-        {scoreTicks.map((tick) => (
-          <span key={tick} className={tick === scoreTicks.at(-1) ? "text-right" : ""}>
-            {tick}%
-          </span>
-        ))}
-      </div>
       <div className={runListClass}>
         {rows.map((row) => (
-          <div
+          <a
             key={row.run_id}
+            href={`/runs/${row.run_id}`}
             className="grid items-center gap-3 min-[900px]:grid-cols-[minmax(0,280px)_auto_minmax(0,1fr)]"
           >
-            <strong className="text-[0.95rem]">{row.model_name}</strong>
+            <ModelBadge companySlug={row.company_slug} modelName={row.model_name} reasoningEffort={row.reasoning_effort} />
             <span
               className="grid h-6 w-6 place-items-center rounded-full border border-[color:var(--line)] text-[0.8rem] font-bold text-[color:var(--muted)]"
               title={`${row.mode} · ${row.status}`}
@@ -130,7 +127,7 @@ export function LeaderboardBars({ rows }: { rows: LeaderboardRow[] }) {
                 {formatPercent(row.score_pct)}
               </div>
             </div>
-          </div>
+          </a>
         ))}
       </div>
     </div>
@@ -174,11 +171,11 @@ export function TokenRangeChart({ rows }: { rows: LeaderboardRow[] }) {
           return (
             <g
               key={row.run_id}
-              onPointerEnter={() => setTooltip({ x: avgX, y, title: row.model_name, lines })}
+              onPointerEnter={() => setTooltip({ x: avgX, y, title: stripCompanyPrefix(row.model_name), lines })}
               onPointerLeave={() => setTooltip(null)}
             >
-              <text x="10" y={y + 4} className="fill-[color:var(--ink)] text-[12px]">
-                {row.model_name}
+              <text x="10" y={y - 4} className="fill-[color:var(--ink)] text-[12px]">
+                <tspan x="10" dy="0">{stripCompanyPrefix(row.model_name).length > 40 ? stripCompanyPrefix(row.model_name).slice(0, 37) + "..." : stripCompanyPrefix(row.model_name)}</tspan>
               </text>
               <line x1={minX} y1={y} x2={maxX} y2={y} stroke="var(--chart-series)" strokeWidth="4" />
               <circle cx={avgX} cy={y} r="6" fill="var(--chart-point)" />
@@ -256,7 +253,7 @@ export function ScatterChart({ rows }: { rows: LeaderboardRow[] }) {
             <g
               key={row.run_id}
               aria-label={`${row.model_name} | ${formatPercent(row.score_pct)} | avg ${row.avg_total_tokens.toFixed(1)} tokens`}
-              onPointerEnter={() => setTooltip({ x, y, title: row.model_name, lines })}
+              onPointerEnter={() => setTooltip({ x, y, title: stripCompanyPrefix(row.model_name), lines })}
               onPointerLeave={() => setTooltip(null)}
             >
               <circle cx={x} cy={y} r="16" fill="#ffffff" stroke={theme.bg} strokeWidth="2.5" />
@@ -358,7 +355,7 @@ export function TimelineChart({ rows }: { rows: LeaderboardRow[] }) {
             <g
               key={row.run_id}
               aria-label={`${row.model_name} | ${formatDate(row.release_date)} | ${formatPercent(row.score_pct)}`}
-              onPointerEnter={() => setTooltip({ x, y, title: row.model_name, lines })}
+              onPointerEnter={() => setTooltip({ x, y, title: stripCompanyPrefix(row.model_name), lines })}
               onPointerLeave={() => setTooltip(null)}
             >
               <rect x={x - 14} y={y - 14} width="28" height="28" rx="8" fill="#ffffff" stroke={theme.bg} strokeWidth="2" />

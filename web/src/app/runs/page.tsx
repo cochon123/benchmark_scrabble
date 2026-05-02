@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { ActiveRunsList } from "@/components/ActiveRunsList";
 import { ModelBadge } from "@/components/ModelBadge";
 import { formatDate, formatPercent } from "@/lib/format";
 import { getLeaderboard } from "@/lib/store";
@@ -30,12 +31,13 @@ export default function RunsPage() {
           </Link>
         </div>
       </section>
+      <ActiveRunsList />
       <section className={panelClass}>
         <div className={runListClass}>
           {runs.map((run) => (
             <Link key={run.run_id} href={`/runs/${run.run_id}`} className={runListItemClass}>
               <div>
-                <ModelBadge companySlug={run.company_slug} modelName={run.model_name} />
+                <ModelBadge companySlug={run.company_slug} modelName={run.model_name} reasoningEffort={run.reasoning_effort} />
                 <p className={mutedClass}>
                   {run.mode} · {run.status} · {formatDate(run.release_date)}
                 </p>

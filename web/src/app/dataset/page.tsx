@@ -82,7 +82,7 @@ export default async function DatasetPage({
                 className={`inline-flex min-w-[2.75rem] items-center justify-center rounded-full border px-4 py-2 text-sm font-semibold ${
                   isCurrent
                     ? "border-[color:var(--accent-dark)] bg-[color:var(--accent-dark)] text-white"
-                    : "border-[color:var(--line)] bg-[rgba(255,255,255,0.58)]"
+                    : "border-[color:var(--line)] bg-[color:var(--surface-subtle)] text-[color:var(--ink)]"
                 }`}
               >
                 {pageNumber}

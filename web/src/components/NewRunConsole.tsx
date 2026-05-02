@@ -3,6 +3,7 @@
 import { useDeferredValue, useEffect, useRef, useState } from "react";
 
 import { RunEvent } from "@/lib/types";
+import { AutoScrollPre } from "@/components/AutoScrollPre";
 import {
   detailCardClass,
   fieldClass,
@@ -30,6 +31,7 @@ export function NewRunConsole() {
   const deferredQuery = useDeferredValue(query);
   const [suggestions, setSuggestions] = useState<SearchResult[]>([]);
   const [selectedModel, setSelectedModel] = useState("openai/gpt-4o-mini");
+  const [reasoningEffort, setReasoningEffort] = useState("medium");
   const [preset, setPreset] = useState("smoke");
   const [boards, setBoards] = useState("5");
   const [runId, setRunId] = useState<string | null>(null);
@@ -150,6 +152,7 @@ export function NewRunConsole() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         model: selectedModel,
+        reasoningEffort,
         preset,
         boards: preset === "custom" ? Number(boards) : undefined,
       }),
@@ -209,6 +212,17 @@ export function NewRunConsole() {
           </label>
 
           <label className={fieldClass}>
+            <span>Reasoning</span>
+            <select className={inputClass} value={reasoningEffort} onChange={(event) => setReasoningEffort(event.target.value)}>
+              <option value="minimal">Minimal</option>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="xhigh">Xhigh</option>
+            </select>
+          </label>
+
+          <label className={fieldClass}>
             <span>Preset</span>
             <select
               className={inputClass}
@@ -254,16 +268,16 @@ export function NewRunConsole() {
           <div className={streamCardClass}>
             <strong>Current response</strong>
             <p className={mutedClass}>{currentTarget ?? "Waiting for model output."}</p>
-            <pre className={preClass}>
+            <AutoScrollPre className={preClass}>
               {streamedContent || "No content streamed yet."}
-            </pre>
+            </AutoScrollPre>
           </div>
           <div className={streamCardClass}>
             <strong>Current reasoning</strong>
             <p className={mutedClass}>Enabled by default when the model supports OpenRouter reasoning.</p>
-            <pre className={preClass}>
+            <AutoScrollPre className={preClass}>
               {streamedReasoning || "No reasoning stream yet."}
-            </pre>
+            </AutoScrollPre>
           </div>
         </div>
         <div className="grid gap-3">

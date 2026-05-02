@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import { LeaderboardBars, ScatterChart, TimelineChart, TokenRangeChart } from "@/components/Charts";
-import { ModelBadge } from "@/components/ModelBadge";
 import { formatPercent } from "@/lib/format";
 import { getLeaderboard } from "@/lib/store";
 import { LeaderboardRow } from "@/lib/types";
@@ -10,12 +9,9 @@ import {
   pageClass,
   panelClass,
   primaryButtonClass,
-  runListClass,
-  runListItemClass,
   secondaryButtonClass,
   statCardClass,
   statsGridClass,
-  titleClass,
 } from "@/lib/ui";
 
 export const dynamic = "force-dynamic";
@@ -65,21 +61,6 @@ export default function BenchmarkPage() {
       </section>
 
       <LeaderboardBars rows={rows} />
-
-      <div className={panelClass}>
-        <h2 className={titleClass}>Latest Models</h2>
-        <div className={`${runListClass} mt-3`}>
-          {rows.slice(0, 8).map((row) => (
-            <Link key={row.run_id} href={`/runs/${row.run_id}`} className={runListItemClass}>
-              <div>
-                <ModelBadge companySlug={row.company_slug} modelName={row.model_name} />
-                <p className={mutedClass}>{row.model_id}</p>
-              </div>
-              <strong>{formatPercent(row.score_pct)}</strong>
-            </Link>
-          ))}
-        </div>
-      </div>
 
       <TokenRangeChart rows={completed} />
       <ScatterChart rows={completed} />

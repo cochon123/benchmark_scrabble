@@ -1,19 +1,17 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { BoardView } from "@/components/BoardView";
+import { RunDetailBoardCard } from "@/components/RunDetailBoardCard";
 import { ModelBadge } from "@/components/ModelBadge";
 import { formatDate, formatPercent } from "@/lib/format";
 import { getDataset, getRun } from "@/lib/store";
 import { Position, RunDetail } from "@/lib/types";
 import {
-  detailCardClass,
   mutedClass,
   pageClass,
   panelClass,
   panelHeaderClass,
+  primaryButtonClass,
   secondaryButtonClass,
-  titleClass,
 } from "@/lib/ui";
 
 export const dynamic = "force-dynamic";
@@ -26,18 +24,24 @@ export default async function RunDetailPage({ params }: { params: Promise<{ runI
   }
   const dataset: Position[] = getDataset();
   const positionMap = new Map(dataset.map((position) => [position.id, position]));
+  const isActive = run.status === "queued" || run.status === "running";
 
   return (
     <div className={pageClass}>
       <section className={panelClass}>
         <div className={panelHeaderClass}>
           <div>
-            <ModelBadge companySlug={run.company_slug} modelName={run.model_name} />
+            <ModelBadge companySlug={run.company_slug} modelName={run.model_name} reasoningEffort={run.reasoning_effort} />
             <p className={mutedClass}>
               {run.model_id} · {run.status} · released {formatDate(run.release_date)}
             </p>
           </div>
           <div className="mt-[18px] flex flex-wrap gap-3 sm:mt-0">
+            {isActive && (
+              <a className={primaryButtonClass} href={`/runs/live/${run.id}`}>
+                Watch Live
+              </a>
+            )}
             <a className={secondaryButtonClass} href={`/api/export/run/${run.id}`}>
               Export this run
             </a>
@@ -52,45 +56,15 @@ export default async function RunDetailPage({ params }: { params: Promise<{ runI
         </p>
       </section>
 
-      {run.board_results.map((result) => {
+      <section className="grid items-start gap-4 [grid-template-columns:repeat(auto-fit,minmax(360px,1fr))] max-[840px]:grid-cols-2 max-[640px]:grid-cols-1">
+        {run.board_results.map((result) => {
         const position = positionMap.get(result.position_id);
         if (!position) {
           return null;
         }
-        return (
-          <section key={result.id} className={`${panelClass} flex flex-col gap-4`}>
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
-              <div>
-                <h2 className={titleClass}>{result.position_id}</h2>
-                <p className={mutedClass}>
-                  model {result.move_score} / optimal {result.optimal_score} · retry {result.retry_used ? "yes" : "no"}
-                </p>
-              </div>
-              <Link href="/dataset" className={secondaryButtonClass}>
-                Compare with dataset
-              </Link>
-            </div>
-            <BoardView
-              board={position.board}
-              rack={position.rack}
-              highlightPlacements={result.parsed_move?.arguments.placements ?? []}
-              highlightTone="model"
-            />
-            <details className={detailCardClass}>
-              <summary>Raw response</summary>
-              <pre className="mt-2.5 overflow-auto whitespace-pre-wrap break-words [font-family:var(--font-geist-mono)] text-[0.84rem]">
-                {result.raw_response}
-              </pre>
-            </details>
-            <details className={detailCardClass}>
-              <summary>Attempt trace</summary>
-              <pre className="mt-2.5 overflow-auto whitespace-pre-wrap break-words [font-family:var(--font-geist-mono)] text-[0.84rem]">
-                {JSON.stringify(result.attempt_trace, null, 2)}
-              </pre>
-            </details>
-          </section>
-        );
+        return <RunDetailBoardCard key={result.id} position={position} result={result} runId={run.id} runStatus={run.status} />;
       })}
+      </section>
     </div>
   );
 }

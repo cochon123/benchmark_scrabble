@@ -11,6 +11,7 @@ const datasetPath = path.join(repoRoot, "data", "dataset", "benchmark_positions.
 
 let dbSingleton: Database.Database | null = null;
 let datasetCache: Position[] | null = null;
+let datasetCacheMtimeMs: number | null = null;
 
 function getDb() {
   if (!fs.existsSync(dbPath)) {
@@ -22,14 +23,26 @@ function getDb() {
   return dbSingleton;
 }
 
+function reasoningEffortSelect(db: Database.Database) {
+  const hasColumn = db
+    .prepare("PRAGMA table_info(runs)")
+    .all()
+    .some((row) => (row as { name?: string }).name === "reasoning_effort");
+  return hasColumn ? "reasoning_effort" : "'high' AS reasoning_effort";
+}
+
 export function getDataset(): Position[] {
-  if (datasetCache) {
-    return datasetCache;
-  }
   if (!fs.existsSync(datasetPath)) {
+    datasetCache = null;
+    datasetCacheMtimeMs = null;
     return [];
   }
+  const stats = fs.statSync(datasetPath);
+  if (datasetCache && datasetCacheMtimeMs === stats.mtimeMs) {
+    return datasetCache;
+  }
   datasetCache = JSON.parse(fs.readFileSync(datasetPath, "utf-8")) as Position[];
+  datasetCacheMtimeMs = stats.mtimeMs;
   return datasetCache;
 }
 
@@ -44,13 +57,33 @@ export function getLeaderboard(): LeaderboardRow[] {
       SELECT id AS run_id, company_slug, model_id, model_name, release_date,
              score_pct, raw_points, optimal_raw_points,
              avg_total_tokens, min_total_tokens, max_total_tokens,
-             status, mode, board_count, started_at
+             status, mode, board_count, started_at, ${reasoningEffortSelect(db)}
       FROM runs
       ORDER BY score_pct DESC, started_at DESC
       `,
     )
     .all() as LeaderboardRow[];
   return rows;
+}
+
+export function getActiveRuns(): LeaderboardRow[] {
+  const db = getDb();
+  if (!db) {
+    return [];
+  }
+  return db
+    .prepare(
+      `
+      SELECT id AS run_id, company_slug, model_id, model_name, release_date,
+             score_pct, raw_points, optimal_raw_points,
+             avg_total_tokens, min_total_tokens, max_total_tokens,
+             status, mode, board_count, started_at, ${reasoningEffortSelect(db)}
+      FROM runs
+      WHERE status IN ('queued', 'running')
+      ORDER BY started_at DESC
+      `,
+    )
+    .all() as LeaderboardRow[];
 }
 
 export function getRun(runId: string): RunDetail | null {
@@ -68,6 +101,7 @@ export function getRun(runId: string): RunDetail | null {
 
   return {
     ...run,
+    reasoning_effort: run.reasoning_effort ?? "high",
     board_results: boardResults.map((result) => ({
       ...result,
       parsed_move: result.parsed_move ? JSON.parse(result.parsed_move) : null,
@@ -75,4 +109,3 @@ export function getRun(runId: string): RunDetail | null {
     })),
   };
 }
-

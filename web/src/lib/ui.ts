@@ -10,12 +10,13 @@ export const titleClass = "text-[1.25rem] leading-[1.1] tracking-[-0.03em]";
 export const mutedClass = "text-[color:var(--muted)]";
 
 export const pillButtonClass =
-  "inline-flex items-center justify-center gap-2 rounded-full border px-[1.1rem] py-3 font-bold";
+  "inline-flex items-center justify-center gap-2 rounded-full border px-[1.1rem] py-3 font-bold transition-all duration-150 ease-out hover:-translate-y-[1px] hover:shadow-[0_8px_18px_rgba(22,32,42,0.08)] active:translate-y-0 active:shadow-[0_3px_10px_rgba(22,32,42,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--background)]";
 
-export const secondaryButtonClass = `${pillButtonClass} border-[color:var(--line)] bg-white/60`;
+export const secondaryButtonClass =
+  `${pillButtonClass} border-[color:var(--line)] bg-[color:var(--surface-subtle)] text-[color:var(--ink)] hover:bg-[color:var(--surface-strong)] active:bg-[color:var(--surface-soft)]`;
 
 export const primaryButtonClass =
-  `${pillButtonClass} cursor-pointer border-[color:var(--accent-dark)] bg-[color:var(--accent-dark)] text-white`;
+  `${pillButtonClass} cursor-pointer border-[color:var(--accent-dark)] bg-[color:var(--accent-dark)] !text-[color:var(--accent-contrast)] hover:bg-[color:var(--accent)] active:bg-[color:var(--accent-dark)]`;
 
 export const statsGridClass = "grid gap-[14px] [grid-template-columns:repeat(auto-fit,minmax(180px,1fr))]";
 
@@ -29,21 +30,21 @@ export const runListItemClass =
 export const fieldClass = "grid gap-2";
 
 export const inputClass =
-  "w-full rounded-2xl border border-[color:var(--line)] bg-white/85 px-4 py-[0.9rem] text-[inherit] outline-none";
+  "w-full rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-input)] px-4 py-[0.9rem] text-[inherit] outline-none";
 
 export const suggestionListClass = "mt-1.5 grid gap-1.5";
 
 export const suggestionItemClass =
-  "rounded-[14px] border border-[color:var(--line)] bg-white/75 px-3 py-2.5 text-left";
+  "rounded-[14px] border border-[color:var(--line)] bg-[color:var(--surface-soft)] px-3 py-2.5 text-left";
 
 export const streamGridClass = "mb-4 grid gap-3 min-[841px]:grid-cols-2";
 
-export const streamCardClass = "rounded-[18px] border border-[color:var(--line)] bg-white/70 p-4";
+export const streamCardClass = "rounded-[18px] border border-[color:var(--line)] bg-[color:var(--surface-soft)] p-4";
 
 export const preClass =
-  "mt-2.5 max-h-80 overflow-auto rounded-[14px] border border-[rgba(22,32,42,0.08)] bg-slate-100/80 px-[14px] py-3 [font-family:var(--font-geist-mono)] text-[0.84rem] leading-[1.55] whitespace-pre-wrap break-words";
+  "mt-2.5 max-h-80 overflow-auto rounded-[14px] border border-[color:var(--line)] bg-[color:var(--surface-pre)] px-[14px] py-3 [font-family:var(--font-geist-mono)] text-[0.84rem] leading-[1.55] whitespace-pre-wrap break-words";
 
-export const detailCardClass = "rounded-2xl border border-[color:var(--line)] bg-white/60 p-[14px]";
+export const detailCardClass = "rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-[14px]";
 
 export const shellClass = "mx-auto w-[calc(100%-32px)] max-w-[1380px] pt-7 pb-12 max-[840px]:pt-[18px]";
 

@@ -39,6 +39,7 @@ export type LeaderboardRow = {
   company_slug: string;
   model_id: string;
   model_name: string;
+  reasoning_effort: string;
   release_date: string | null;
   score_pct: number;
   raw_points: number;
@@ -59,7 +60,30 @@ export type RunBoardResult = {
   raw_response: string;
   parsed_move: { tool: string; arguments: { placements: Placement[] } } | null;
   validation_error: string | null;
-  attempt_trace: Array<{ attempt: number; raw_response: string; reasoning?: string; status: string; error?: string }>;
+  attempt_trace: Array<{
+    attempt: number;
+    raw_response: string;
+    reasoning?: string;
+    reasoning_trace?: {
+      requested?: { enabled?: boolean; exclude?: boolean; effort?: string };
+      events?: Array<{ type: string; elapsed_ms?: number; delta_ms?: number; chars?: number }>;
+      summary?: {
+        latency_ms?: number;
+        reasoning_events?: number;
+        content_events?: number;
+        reasoning_chars?: number;
+        content_chars?: number;
+        first_reasoning_ms?: number | null;
+        last_reasoning_ms?: number | null;
+        first_content_ms?: number | null;
+        last_content_ms?: number | null;
+        wait_before_reasoning_ms?: number;
+        wait_before_content_ms?: number;
+      };
+    };
+    status: string;
+    error?: string;
+  }>;
   retry_used: number;
   move_score: number;
   optimal_score: number;
@@ -75,6 +99,7 @@ export type RunDetail = {
   id: string;
   model_id: string;
   model_name: string;
+  reasoning_effort: string;
   company_slug: string;
   release_date: string | null;
   mode: string;
@@ -93,7 +118,7 @@ export type RunDetail = {
 };
 
 export type RunEvent =
-  | { type: "run_started"; run_id: string; model: string; board_count: number }
+  | { type: "run_started"; run_id: string; model: string; reasoning_effort?: string; board_count: number }
   | {
       type: "attempt_started";
       run_id: string;
@@ -102,6 +127,7 @@ export type RunEvent =
       position_id: string;
       attempt_index: number;
       model: string;
+      reasoning_effort?: string;
     }
   | {
       type: "output_delta";
@@ -112,6 +138,9 @@ export type RunEvent =
       attempt_index: number;
       channel: "content" | "reasoning";
       text: string;
+      elapsed_ms?: number;
+      delta_ms?: number;
+      chars?: number;
     }
   | {
       type: "attempt_invalid";
