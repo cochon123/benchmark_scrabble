@@ -1,35 +1,52 @@
 # Scrabble LLM Benchmark
 
-Local-first benchmark for testing whether language models can find the highest-scoring immediate Scrabble move for a given board state and rack.
+Benchmark for testing whether language models can find the highest-scoring Scrabble move.
 
-## Stack
-
-- `web/`: Next.js UI and local API routes
-- `scrabble_bench/`: Python solver, dataset pipeline, runner, SQLite store, and exports
-- `data/`: lexicon, dataset, logs, exports, and Quackle workspace
-
-## Quick start
-
-1. Create a root `.env` with `OPENROUTER_API_KEY=...`.
-   Optional: set `OPENROUTER_REASONING_EFFORT=medium` to control OpenRouter reasoning effort (`minimal`, `low`, `medium`, `high`, or `xhigh`).
-2. Start the web app:
+## Setup
 
 ```bash
-cd web
-npm install
-npm run dev
+# Install dependencies
+pip install -e .
+cd web && npm install && cd ..
+
+# Create .env file
+echo "OPENROUTER_API_KEY=your_key_here" > .env
 ```
 
-3. Run the CLI benchmark:
+## Generate Dataset
 
 ```bash
+python3 -m scrabble_bench generate-dataset
+```
+
+This creates 100 benchmark positions (34 at ply 6, 33 at ply 10, 33 at ply 14) with optimal solutions computed via Quackle.
+
+To use a different lexicon, add `data/lexicon/NWL23.txt`.
+
+## Run Benchmark
+
+```bash
+# Quick test (9 positions)
 python3 -m scrabble_bench run --model openai/gpt-4o-mini --preset smoke
+
+# Full benchmark (100 positions)
+python3 -m scrabble_bench run --model openai/gpt-4o-mini --preset full
 ```
 
-## Notes
+Other options:
+- `--reasoning-effort minimal|low|medium|high|xhigh` - control reasoning effort
+- `--boards N` - run on N random positions
 
-- The benchmark prefers `data/lexicon/NWL23.txt` when present.
-- If that file is missing, the app falls back to the local system dictionary so the project remains runnable.
-- `python3 -m scrabble_bench generate-dataset` creates the canonical dataset file used by the UI and runner.
-- `python3 -m scrabble_bench setup-quackle` clones and builds Quackle into `data/quackle/`.
-- OpenRouter reasoning is requested by default and saved in each attempt trace when the provider returns it. Some models use hidden reasoning or return no reasoning text even when reasoning effort is enabled.
+## How It Works
+
+1. **Dataset**: Self-play simulated games generate positions at specific ply thresholds (6, 10, 14). Quackle computes optimal moves for each position.
+2. **Evaluation**: The LLM is prompted with the board state and rack, asked to return the highest-scoring move.
+3. **Scoring**: Results are compared against optimal Quackle moves. Score = percentage of optimal moves found.
+
+## Web UI
+
+```bash
+cd web && npm run dev
+```
+
+Access at http://localhost:3000 to view results and leaderboard.
