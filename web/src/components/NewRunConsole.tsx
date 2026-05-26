@@ -34,6 +34,7 @@ export function NewRunConsole() {
   const [reasoningEffort, setReasoningEffort] = useState("medium");
   const [preset, setPreset] = useState("smoke");
   const [boards, setBoards] = useState("5");
+  const [concurrency, setConcurrency] = useState("4");
   const [runId, setRunId] = useState<string | null>(null);
   const [events, setEvents] = useState<RunEvent[]>([]);
   const [status, setStatus] = useState("idle");
@@ -155,6 +156,7 @@ export function NewRunConsole() {
         reasoningEffort,
         preset,
         boards: preset === "custom" ? Number(boards) : undefined,
+        concurrency: Number(concurrency),
       }),
     });
 
@@ -214,6 +216,7 @@ export function NewRunConsole() {
           <label className={fieldClass}>
             <span>Reasoning</span>
             <select className={inputClass} value={reasoningEffort} onChange={(event) => setReasoningEffort(event.target.value)}>
+              <option value="none">None</option>
               <option value="minimal">Minimal</option>
               <option value="low">Low</option>
               <option value="medium">Medium</option>
@@ -250,6 +253,18 @@ export function NewRunConsole() {
               value={boards}
               onChange={(event) => setBoards(event.target.value)}
               disabled={preset !== "custom"}
+            />
+          </label>
+
+          <label className={fieldClass}>
+            <span>Parallelism</span>
+            <input
+              className={inputClass}
+              type="number"
+              min="1"
+              max="32"
+              value={concurrency}
+              onChange={(event) => setConcurrency(event.target.value)}
             />
           </label>
         </div>

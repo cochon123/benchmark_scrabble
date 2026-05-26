@@ -4,9 +4,10 @@ import json
 import sys
 import threading
 import time
+from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
 from typing import Any
 
-from .config import DATASET_PATH, normalize_reasoning_effort, resolve_lexicon_path
+from .config import DATASET_PATH, get_openrouter_api_key, normalize_reasoning_effort, resolve_lexicon_path
 from .dataset import dataset_subset, load_dataset
 from .lexicon import Lexicon
 from .models import Placement
@@ -130,7 +131,7 @@ def prompt_for_position(
             "With play_move, you must return only the new tiles placed this turn.",
             "If your word crosses a letter already present on the board, do not return that square in placements.",
             "Never invent letters outside the rack. A ? in the rack may stand for one missing letter.",
-            "Use reasoning if your model supports it, but keep the visible answer to the JSON object only.",
+            "Keep the visible answer to the JSON object only.",
             "Do not include prose before or after the JSON object.",
         ]
     )
@@ -190,8 +191,10 @@ def prepare_run(model: str, mode: str, boards: int | None, reasoning_effort: str
     if mode == "custom" and boards is None:
         raise RuntimeError("Custom runs require an explicit --boards value.")
     board_count = boards if boards is not None else {"smoke": 5, "full": 100}.get(mode, 100)
-    metadata = fetch_model_metadata(model)
     effort = normalize_reasoning_effort(reasoning_effort)
+    metadata = fetch_model_metadata(model, effort)
+    if metadata["model_id"] != "demo/mock" and not get_openrouter_api_key():
+        raise RuntimeError("OPENROUTER_API_KEY is missing. Add it to the root .env file before starting a provider run.")
     return create_run(
         model_id=metadata["model_id"],
         model_name=metadata["model_name"],
@@ -203,9 +206,10 @@ def prepare_run(model: str, mode: str, boards: int | None, reasoning_effort: str
     )
 
 
-def execute_run(run: dict[str, Any]) -> None:
+def execute_run(run: dict[str, Any], concurrency: int = 1) -> None:
     dataset = dataset_subset(run["mode"], run["board_count"])
     lexicon = Lexicon.from_path(resolve_lexicon_path())
+    worker_count = max(1, min(int(concurrency or 1), len(dataset) or 1))
     update_run_status(run["id"], "running")
     append_log(
         run["id"],
@@ -215,46 +219,69 @@ def execute_run(run: dict[str, Any]) -> None:
             "model": run["model_id"],
             "reasoning_effort": run.get("reasoning_effort", "medium"),
             "board_count": len(dataset),
+            "concurrency": worker_count,
         },
     )
 
     try:
-        for index, position in enumerate(dataset, start=1):
-            if should_stop(run["id"]):
-                update_run_status(run["id"], "cancelled")
-                append_log(run["id"], {"type": "run_cancelled", "run_id": run["id"]})
-                print("Run cancelled.", flush=True)
-                return
-            board_result = _run_position(
-                run["id"],
-                run["model_id"],
-                run.get("reasoning_effort", "high"),
-                lexicon,
-                position,
-                index,
-                len(dataset),
-            )
-            record_board_result(run["id"], board_result)
-            append_log(
-                run["id"],
-                {
-                    "type": "board_result",
-                    "run_id": run["id"],
-                    "index": index,
-                    "board_count": len(dataset),
-                    "position_id": position["id"],
-                    "move_score": board_result["move_score"],
-                    "optimal_score": board_result["optimal_score"],
-                    "retry_used": board_result["retry_used"],
-                    "validation_error": board_result["validation_error"],
-                    "total_tokens": board_result["total_tokens"],
-                    "latency_ms": board_result["latency_ms"],
-                },
-            )
-            print(
-                f"[{index}/{len(dataset)}] {position['id']}: "
-                f"{board_result['move_score']}/{board_result['optimal_score']} points"
-            )
+        if worker_count == 1:
+            for index, position in enumerate(dataset, start=1):
+                if should_stop(run["id"]):
+                    _cancel_run(run["id"])
+                    return
+                board_result = _run_position(
+                    run["id"],
+                    run["model_id"],
+                    run.get("reasoning_effort", "high"),
+                    lexicon,
+                    position,
+                    index,
+                    len(dataset),
+                )
+                _record_position_result(run["id"], index, len(dataset), position, board_result)
+        else:
+            print(f"Running {len(dataset)} boards with concurrency={worker_count}", flush=True)
+            with ThreadPoolExecutor(max_workers=worker_count) as executor:
+                pending: dict[Future[dict[str, Any]], tuple[int, dict[str, Any]]] = {}
+                next_position = 0
+
+                def submit_next() -> None:
+                    nonlocal next_position
+                    if next_position >= len(dataset):
+                        return
+                    index = next_position + 1
+                    position = dataset[next_position]
+                    next_position += 1
+                    pending[
+                        executor.submit(
+                            _run_position,
+                            run["id"],
+                            run["model_id"],
+                            run.get("reasoning_effort", "high"),
+                            lexicon,
+                            position,
+                            index,
+                            len(dataset),
+                        )
+                    ] = (index, position)
+
+                for _ in range(worker_count):
+                    submit_next()
+
+                while pending:
+                    if should_stop(run["id"]):
+                        for future in pending:
+                            future.cancel()
+                        _cancel_run(run["id"])
+                        return
+                    done, _ = wait(pending, timeout=1, return_when=FIRST_COMPLETED)
+                    if not done:
+                        continue
+                    for future in done:
+                        index, position = pending.pop(future)
+                        board_result = future.result()
+                        _record_position_result(run["id"], index, len(dataset), position, board_result)
+                        submit_next()
         update_run_status(run["id"], "completed")
         append_log(run["id"], {"type": "run_completed", "run_id": run["id"]})
     except KeyboardInterrupt:
@@ -266,6 +293,43 @@ def execute_run(run: dict[str, Any]) -> None:
         update_run_status(run["id"], "failed", str(exc))
         append_log(run["id"], {"type": "run_failed", "run_id": run["id"], "error": str(exc)})
         raise
+
+
+def _cancel_run(run_id: str) -> None:
+    update_run_status(run_id, "cancelled")
+    append_log(run_id, {"type": "run_cancelled", "run_id": run_id})
+    print("Run cancelled.", flush=True)
+
+
+def _record_position_result(
+    run_id: str,
+    index: int,
+    total: int,
+    position: dict[str, Any],
+    board_result: dict[str, Any],
+) -> None:
+    record_board_result(run_id, board_result)
+    append_log(
+        run_id,
+        {
+            "type": "board_result",
+            "run_id": run_id,
+            "index": index,
+            "board_count": total,
+            "position_id": position["id"],
+            "move_score": board_result["move_score"],
+            "optimal_score": board_result["optimal_score"],
+            "retry_used": board_result["retry_used"],
+            "validation_error": board_result["validation_error"],
+            "total_tokens": board_result["total_tokens"],
+            "latency_ms": board_result["latency_ms"],
+        },
+    )
+    print(
+        f"[{index}/{total}] {position['id']}: "
+        f"{board_result['move_score']}/{board_result['optimal_score']} points",
+        flush=True,
+    )
 
 
 def _run_position(

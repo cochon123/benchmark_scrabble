@@ -30,14 +30,15 @@ def main() -> None:
     run_parser.add_argument("--model", help="OpenRouter model id")
     run_parser.add_argument("--preset", default="smoke", choices=["smoke", "full", "custom"])
     run_parser.add_argument("--boards", type=int)
-    run_parser.add_argument("--reasoning-effort", default="medium", choices=["minimal", "low", "medium", "high", "xhigh"])
+    run_parser.add_argument("--reasoning-effort", default="medium", choices=["none", "minimal", "low", "medium", "high", "xhigh"])
+    run_parser.add_argument("--concurrency", type=int, default=1)
     run_parser.add_argument("--run-id")
 
     prepare_parser = subparsers.add_parser("prepare-run")
     prepare_parser.add_argument("--model", required=True)
     prepare_parser.add_argument("--preset", default="smoke", choices=["smoke", "full", "custom"])
     prepare_parser.add_argument("--boards", type=int)
-    prepare_parser.add_argument("--reasoning-effort", default="medium", choices=["minimal", "low", "medium", "high", "xhigh"])
+    prepare_parser.add_argument("--reasoning-effort", default="medium", choices=["none", "minimal", "low", "medium", "high", "xhigh"])
 
     subparsers.add_parser("generate-dataset")
     subparsers.add_parser("setup-quackle")
@@ -83,7 +84,7 @@ def main() -> None:
             if not args.model:
                 raise SystemExit("--model is required unless --run-id is provided")
             run = prepare_run(args.model, args.preset, args.boards, args.reasoning_effort)
-        execute_run(run)
+        execute_run(run, concurrency=args.concurrency)
         return
 
     if args.command == "export":

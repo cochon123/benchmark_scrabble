@@ -25,8 +25,8 @@ export function runPythonJson<T>(args: string[]): T {
   return JSON.parse(output) as T;
 }
 
-export function spawnBenchmark(runId: string) {
-  const child = spawn("python3", [...pythonArgs, "run", "--run-id", runId], {
+export function spawnBenchmark(runId: string, concurrency = 1) {
+  const child = spawn("python3", [...pythonArgs, "run", "--run-id", runId, "--concurrency", String(concurrency)], {
     cwd: repoRoot,
     detached: true,
     stdio: "ignore",
@@ -56,4 +56,3 @@ export function readFileIfExists(filePath: string) {
 }
 
 export { repoRoot };
-

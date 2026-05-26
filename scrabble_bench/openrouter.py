@@ -91,11 +91,14 @@ def _summarize_trace(events: list[dict[str, Any]], latency_ms: int) -> dict[str,
     }
 
 
-def _reasoning_config(effort: str | None = None) -> dict[str, Any]:
+def _reasoning_config(effort: str | None = None) -> dict[str, Any] | None:
+    normalized = normalize_reasoning_effort(effort) if effort is not None else get_openrouter_reasoning_effort()
+    if normalized == "none":
+        return None
     return {
         "enabled": True,
         "exclude": False,
-        "effort": normalize_reasoning_effort(effort) if effort is not None else get_openrouter_reasoning_effort(),
+        "effort": normalized,
     }
 
 
@@ -175,9 +178,11 @@ def all_models() -> list[dict[str, Any]]:
     return _request_json(f"{OPENROUTER_BASE}/api/v1/models").get("data", [])
 
 
-def normalize_model_for_benchmark(model_id: str) -> str:
+def normalize_model_for_benchmark(model_id: str, reasoning_effort: str | None = None) -> str:
     if model_id == "demo/mock":
         return model_id
+    if normalize_reasoning_effort(reasoning_effort) == "none":
+        return _base_model_slug(model_id)
     if ":" in model_id:
         return model_id
     if model_id.startswith("deepseek/"):
@@ -215,8 +220,16 @@ def model_supports_reasoning(model_id: str) -> bool:
     return False
 
 
-def fetch_model_metadata(model_id: str) -> dict[str, Any]:
-    effective_model = normalize_model_for_benchmark(model_id)
+def fetch_model_metadata(model_id: str, reasoning_effort: str | None = None) -> dict[str, Any]:
+    effective_model = normalize_model_for_benchmark(model_id, reasoning_effort)
+    if effective_model == "demo/mock":
+        return {
+            "model_id": effective_model,
+            "model_name": "Demo Mock",
+            "company_slug": "demo",
+            "release_date": None,
+            "supports_reasoning": False,
+        }
     slug = _base_model_slug(effective_model)
     short = model_search(slug.split("/")[-1])
     for item in short:
@@ -287,21 +300,23 @@ def chat_completion(
         "HTTP-Referer": "http://localhost:3000",
         "X-Title": "Scrabble LLM Benchmark",
     }
-    effective_model = normalize_model_for_benchmark(model)
+    effective_model = normalize_model_for_benchmark(model, reasoning_effort)
     candidate_models = [effective_model]
     if effective_model.endswith(":thinking"):
         candidate_models.append(_base_model_slug(effective_model))
 
     last_error: Exception | None = None
     for candidate_model in candidate_models:
+        reasoning_config = _reasoning_config(reasoning_effort)
         payload: dict[str, Any] = {
             "model": candidate_model,
             "temperature": 0,
             "messages": messages,
-            "reasoning": _reasoning_config(reasoning_effort),
             "stream": True,
             "stream_options": {"include_usage": True},
         }
+        if reasoning_config is not None:
+            payload["reasoning"] = reasoning_config
 
         start = time.perf_counter()
         request = urllib.request.Request(

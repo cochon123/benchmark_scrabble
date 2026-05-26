@@ -5,6 +5,7 @@ import unittest
 from pathlib import Path
 
 from scrabble_bench.lexicon import Lexicon
+from scrabble_bench.openrouter import normalize_model_for_benchmark
 from scrabble_bench.runner import _retry_feedback, parse_tool_payload, prompt_for_position
 from scrabble_bench.solver import BoardTile, empty_grid, validate_and_score_move
 
@@ -46,6 +47,12 @@ class ParserTests(unittest.TestCase):
         self.assertIn('"hint"', feedback)
         self.assertIn('"rack"', feedback)
         self.assertIn("Return only newly placed tiles.", feedback)
+
+    def test_no_reasoning_keeps_deepseek_base_model(self) -> None:
+        self.assertEqual(
+            normalize_model_for_benchmark("deepseek/deepseek-v4-flash:thinking", "none"),
+            "deepseek/deepseek-v4-flash",
+        )
 
 
 class SolverTests(unittest.TestCase):

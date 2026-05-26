@@ -9,6 +9,7 @@ export function RunLive({ run }: { run: RunDetail }) {
     company_slug: run.company_slug,
     model_id: run.model_id,
     model_name: run.model_name,
+    reasoning_effort: run.reasoning_effort,
     release_date: run.release_date,
     score_pct: run.score_pct,
     raw_points: run.raw_points,

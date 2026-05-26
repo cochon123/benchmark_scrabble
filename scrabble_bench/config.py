@@ -46,7 +46,7 @@ def get_openrouter_api_key() -> str | None:
     return os.environ.get("OPENROUTER_API_KEY")
 
 
-VALID_REASONING_EFFORTS = {"minimal", "low", "medium", "high", "xhigh"}
+VALID_REASONING_EFFORTS = {"none", "minimal", "low", "medium", "high", "xhigh"}
 
 
 def normalize_reasoning_effort(effort: str | None) -> str:

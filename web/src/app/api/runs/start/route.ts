@@ -12,6 +12,7 @@ export async function POST(request: Request) {
       preset?: string;
       boards?: number;
       reasoningEffort?: string;
+      concurrency?: number;
     };
     if (!body.model) {
       return NextResponse.json({ error: "Model is required." }, { status: 400 });
@@ -26,8 +27,12 @@ export async function POST(request: Request) {
     if (typeof body.boards === "number" && Number.isFinite(body.boards)) {
       args.push("--boards", String(body.boards));
     }
+    const concurrency =
+      typeof body.concurrency === "number" && Number.isFinite(body.concurrency)
+        ? Math.max(1, Math.min(32, Math.floor(body.concurrency)))
+        : 1;
     const run = runPythonJson<{ id: string }>(args);
-    spawnBenchmark(run.id);
+    spawnBenchmark(run.id, concurrency);
     return NextResponse.json(run);
   } catch (error) {
     return NextResponse.json(
