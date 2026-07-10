@@ -1,9 +1,19 @@
 import { NextResponse } from "next/server";
 
-import { runPythonJson, spawnBenchmark } from "@/lib/server";
+import { runPythonJson, spawnBenchmark, spawnCliBenchmark } from "@/lib/server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+function parseCliModel(model: string): { agent: string; cliModel?: string } | null {
+  const parts = model.trim().split("/");
+  if (parts.length < 2 || parts[0] !== "cli") {
+    return null;
+  }
+  const agent = parts[1];
+  const cliModel = parts.length > 2 ? parts.slice(2).join("/") : undefined;
+  return { agent, cliModel };
+}
 
 export async function POST(request: Request) {
   try {
@@ -20,6 +30,24 @@ export async function POST(request: Request) {
     if (body.preset === "custom" && (!body.boards || body.boards < 1)) {
       return NextResponse.json({ error: "Custom runs require a positive board count." }, { status: 400 });
     }
+
+    const cli = parseCliModel(body.model);
+    if (cli) {
+      const args = ["prepare-cli-run", "--agent", cli.agent, "--preset", body.preset ?? "smoke"];
+      if (cli.cliModel) {
+        args.push("--model", cli.cliModel);
+      }
+      if (body.reasoningEffort) {
+        args.push("--reasoning-effort", body.reasoningEffort);
+      }
+      if (typeof body.boards === "number" && Number.isFinite(body.boards)) {
+        args.push("--boards", String(body.boards));
+      }
+      const run = runPythonJson<{ id: string }>(args);
+      spawnCliBenchmark(run.id, cli.agent, cli.cliModel);
+      return NextResponse.json(run);
+    }
+
     const args = ["prepare-run", "--model", body.model, "--preset", body.preset ?? "smoke"];
     if (body.reasoningEffort) {
       args.push("--reasoning-effort", body.reasoningEffort);

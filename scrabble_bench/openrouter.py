@@ -8,7 +8,13 @@ from datetime import UTC, datetime
 from urllib.error import HTTPError
 from typing import Any, Callable
 
-from .config import get_openrouter_api_key, get_openrouter_reasoning_effort, normalize_reasoning_effort
+from .config import (
+    get_cli2api_base_url,
+    get_cli2api_token,
+    get_openrouter_api_key,
+    get_openrouter_reasoning_effort,
+    normalize_reasoning_effort,
+)
 
 
 OPENROUTER_BASE = "https://openrouter.ai"
@@ -221,6 +227,15 @@ def model_supports_reasoning(model_id: str) -> bool:
 
 
 def fetch_model_metadata(model_id: str, reasoning_effort: str | None = None) -> dict[str, Any]:
+    if model_id.startswith("cli2api/"):
+        local = model_id[len("cli2api/") :]
+        return {
+            "model_id": model_id,
+            "model_name": f"cli2api ({local})",
+            "company_slug": "cli2api",
+            "release_date": None,
+            "supports_reasoning": True,
+        }
     effective_model = normalize_model_for_benchmark(model_id, reasoning_effort)
     if effective_model == "demo/mock":
         return {
@@ -290,6 +305,14 @@ def chat_completion(
             "model": model,
             "reasoning": "",
         }
+
+    if model.startswith("cli2api/"):
+        return _cli2api_chat_completion(
+            model,
+            messages,
+            on_stream_event=on_stream_event,
+            on_status=on_status,
+        )
 
     api_key = get_openrouter_api_key()
     if not api_key:
@@ -389,10 +412,13 @@ def chat_completion(
                         last_delta_at = now
                         if on_stream_event is not None:
                             on_stream_event({**event, "text": text})
-                    reasoning = _extract_text(delta.get("reasoning"))
+                    reasoning = _extract_text(delta.get("reasoning")) or _extract_text(delta.get("reasoning_content"))
                     if not reasoning and not delta and isinstance(choices[0].get("message"), dict):
-                        reasoning = _extract_text(choices[0]["message"].get("reasoning")) or _extract_reasoning_details(
-                            choices[0]["message"].get("reasoning_details")
+                        message = choices[0]["message"]
+                        reasoning = (
+                            _extract_text(message.get("reasoning"))
+                            or _extract_text(message.get("reasoning_content"))
+                            or _extract_reasoning_details(message.get("reasoning_details"))
                         )
                     if reasoning:
                         last_model_delta_at = now
@@ -455,3 +481,207 @@ def chat_completion(
     if last_error is not None:
         raise last_error
     raise RuntimeError("OpenRouter request failed without a response.")
+
+
+def search_cli2api_models(query: str) -> list[dict[str, Any]]:
+    needle = query.strip().lower()
+    if not needle:
+        return []
+    defaults = [
+        {"slug": "cli2api/codex/gpt-5.6-terra", "name": "cli2api · Codex · gpt-5.6-terra"},
+        {"slug": "cli2api/codex/default", "name": "cli2api · Codex · default"},
+    ]
+    results = []
+    for row in defaults:
+        hay = f"{row['slug']} {row['name']}".lower()
+        if needle in hay or "cli2api" in needle or needle.startswith("cli2"):
+            results.append({**row, "author": "cli2api", "source": "cli2api"})
+    return results
+
+
+def _cli2api_non_stream_completion(
+    *,
+    url: str,
+    request_payload: dict[str, Any],
+    headers: dict[str, str],
+    api_model: str,
+    on_status: Callable[[str], None] | None = None,
+) -> dict[str, Any]:
+    payload = dict(request_payload)
+    payload["stream"] = False
+    if on_status is not None:
+        on_status(f"retrying without streaming model={api_model}")
+    start = time.perf_counter()
+    response = _request_json(url, headers=headers, body=payload)
+    latency_ms = int((time.perf_counter() - start) * 1000)
+    choices = response.get("choices") or []
+    message = choices[0].get("message") if choices else {}
+    content = _extract_text(message.get("content")) if isinstance(message, dict) else ""
+    reasoning = ""
+    if isinstance(message, dict):
+        reasoning = _extract_text(message.get("reasoning")) or _extract_text(message.get("reasoning_content"))
+    events = [
+        {"type": "request_sent", "elapsed_ms": 0},
+        {"type": "non_stream_response", "elapsed_ms": latency_ms},
+    ]
+    if reasoning:
+        events.append({"type": "reasoning_delta", "elapsed_ms": latency_ms, "delta_ms": latency_ms, "chars": len(reasoning)})
+    if content:
+        events.append({"type": "content_delta", "elapsed_ms": latency_ms, "delta_ms": latency_ms, "chars": len(content)})
+    return {
+        "content": content,
+        "usage": response.get("usage") or {},
+        "latency_ms": latency_ms,
+        "provider": "cli2api",
+        "model": response.get("model", api_model),
+        "reasoning": reasoning,
+        "reasoning_trace": {
+            "requested": None,
+            "events": events,
+            "summary": _summarize_trace(events, latency_ms),
+        },
+    }
+
+
+def _cli2api_chat_completion(
+    model: str,
+    messages: list[dict[str, str]],
+    on_stream_event: Callable[[dict[str, Any]], None] | None = None,
+    on_status: Callable[[str], None] | None = None,
+) -> dict[str, Any]:
+    """OpenAI-compatible chat completions against a local cli2api gateway."""
+    base = get_cli2api_base_url()
+    token = get_cli2api_token() or "local"
+    api_model = model[len("cli2api/") :] if model.startswith("cli2api/") else model
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "http://localhost:3000",
+        "X-Title": "Scrabble LLM Benchmark",
+    }
+    payload: dict[str, Any] = {
+        "model": api_model,
+        "temperature": 0,
+        "messages": messages,
+        "stream": True,
+    }
+    url = f"{base}/chat/completions"
+    start = time.perf_counter()
+    request = urllib.request.Request(
+        url,
+        data=json.dumps(payload).encode("utf-8"),
+        headers=headers,
+        method="POST",
+    )
+    content_parts: list[str] = []
+    reasoning_parts: list[str] = []
+    trace_events: list[dict[str, Any]] = [{"type": "request_sent", "elapsed_ms": 0}]
+    last_delta_at = start
+    usage: dict[str, Any] = {}
+
+    try:
+        if on_status is not None:
+            on_status(f"POST {url} model={api_model}")
+        with urllib.request.urlopen(request, timeout=300) as response:
+            if on_status is not None:
+                on_status(f"stream opened model={api_model}")
+            trace_events.append({"type": "stream_opened", "elapsed_ms": _elapsed_ms(start)})
+            seen_bytes = False
+            last_model_delta_at: float | None = None
+            for raw_line in response:
+                now = time.perf_counter()
+                if not seen_bytes:
+                    seen_bytes = True
+                    last_model_delta_at = now
+                    trace_events.append({"type": "first_stream_bytes", "elapsed_ms": _elapsed_ms(start)})
+                    if on_status is not None:
+                        on_status(f"first stream bytes model={api_model}")
+                if (
+                    last_model_delta_at is not None
+                    and now - last_model_delta_at > STALL_WITHOUT_MODEL_TOKENS_SECONDS
+                ):
+                    raise TimeoutError(
+                        "cli2api stream stalled after opening and did not emit model tokens "
+                        f"for {STALL_WITHOUT_MODEL_TOKENS_SECONDS} seconds."
+                    )
+                line = raw_line.decode("utf-8", errors="ignore").strip()
+                if not line.startswith("data:"):
+                    continue
+                data = line[5:].strip()
+                if not data or data == "[DONE]":
+                    continue
+                chunk = json.loads(data)
+                if chunk.get("error"):
+                    message = chunk["error"].get("message") if isinstance(chunk["error"], dict) else chunk["error"]
+                    raise RuntimeError(str(message or "Streaming error from cli2api."))
+                usage = chunk.get("usage") or usage
+                choices = chunk.get("choices") or []
+                if not choices:
+                    continue
+                delta = choices[0].get("delta") or {}
+                text = _extract_text(delta.get("content"))
+                if text:
+                    last_model_delta_at = now
+                    content_parts.append(text)
+                    event = {
+                        "type": "content_delta",
+                        "elapsed_ms": _elapsed_ms(start),
+                        "delta_ms": int((now - last_delta_at) * 1000),
+                        "chars": len(text),
+                    }
+                    trace_events.append(event)
+                    last_delta_at = now
+                    if on_stream_event is not None:
+                        on_stream_event({**event, "text": text})
+                reasoning = _extract_text(delta.get("reasoning")) or _extract_text(delta.get("reasoning_content"))
+                if reasoning:
+                    last_model_delta_at = now
+                    reasoning_parts.append(reasoning)
+                    event = {
+                        "type": "reasoning_delta",
+                        "elapsed_ms": _elapsed_ms(start),
+                        "delta_ms": int((now - last_delta_at) * 1000),
+                        "chars": len(reasoning),
+                    }
+                    trace_events.append(event)
+                    last_delta_at = now
+                    if on_stream_event is not None:
+                        on_stream_event({**event, "text": reasoning})
+    except TimeoutError:
+        return _cli2api_non_stream_completion(
+            url=url,
+            request_payload=payload,
+            headers=headers,
+            api_model=api_model,
+            on_status=on_status,
+        )
+    except KeyboardInterrupt:
+        raise
+    except (HTTPError, OSError, RuntimeError, json.JSONDecodeError) as exc:
+        if content_parts or reasoning_parts:
+            raise
+        if on_status is not None:
+            on_status(f"cli2api stream failed ({exc}); retrying without streaming")
+        return _cli2api_non_stream_completion(
+            url=url,
+            request_payload=payload,
+            headers=headers,
+            api_model=api_model,
+            on_status=on_status,
+        )
+
+    latency_ms = int((time.perf_counter() - start) * 1000)
+    trace_events.append({"type": "stream_done", "elapsed_ms": latency_ms})
+    return {
+        "content": "".join(content_parts),
+        "usage": usage,
+        "latency_ms": latency_ms,
+        "provider": "cli2api",
+        "model": api_model,
+        "reasoning": "".join(reasoning_parts),
+        "reasoning_trace": {
+            "requested": None,
+            "events": trace_events,
+            "summary": _summarize_trace(trace_events, latency_ms),
+        },
+    }

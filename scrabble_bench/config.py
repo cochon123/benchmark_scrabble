@@ -46,6 +46,16 @@ def get_openrouter_api_key() -> str | None:
     return os.environ.get("OPENROUTER_API_KEY")
 
 
+def get_cli2api_base_url() -> str:
+    load_env_file()
+    return os.environ.get("CLI2API_BASE_URL", "http://127.0.0.1:3927/v1").rstrip("/")
+
+
+def get_cli2api_token() -> str | None:
+    load_env_file()
+    return os.environ.get("CLI2API_TOKEN") or os.environ.get("OPENROUTER_API_KEY")
+
+
 VALID_REASONING_EFFORTS = {"none", "minimal", "low", "medium", "high", "xhigh"}
 
 
