@@ -194,7 +194,8 @@ def prepare_run(model: str, mode: str, boards: int | None, reasoning_effort: str
     board_count = boards if boards is not None else {"smoke": 5, "full": 100}.get(mode, 100)
     effort = normalize_reasoning_effort(reasoning_effort)
     metadata = fetch_model_metadata(model, effort)
-    if metadata["model_id"] != "demo/mock" and not get_openrouter_api_key():
+    is_local_gateway = metadata["model_id"].startswith("cli2api/")
+    if metadata["model_id"] != "demo/mock" and not is_local_gateway and not get_openrouter_api_key():
         raise RuntimeError("OPENROUTER_API_KEY is missing. Add it to the root .env file before starting a provider run.")
     return create_run(
         model_id=metadata["model_id"],
@@ -463,7 +464,7 @@ def _run_position(
                 if message.startswith("running "):
                     progress["phase"] = message
                 elif message.startswith("POST "):
-                    progress["phase"] = "contacting OpenRouter"
+                    progress["phase"] = "contacting API"
                 elif message.startswith("stream opened"):
                     progress["phase"] = "stream opened"
                 elif message.startswith("first stream bytes"):
@@ -473,6 +474,14 @@ def _run_position(
                 else:
                     progress["phase"] = message
 
+        def on_status_event(event: dict[str, Any]) -> None:
+            status = str(event.get("status") or "").strip()
+            detail = event.get("detail")
+            if status:
+                with progress_lock:
+                    progress["phase"] = status if not detail else f"{status}: {str(detail)[:80]}"
+            # Status is also mirrored into reasoning_delta by the CLI runner via on_stream_event.
+
         try:
             if cli_agent:
                 response = run_cli_completion(
@@ -480,6 +489,7 @@ def _run_position(
                     cli_model,
                     messages,
                     on_stream_event=on_stream_event,
+                    on_status_event=on_status_event,
                     on_status=on_status,
                     reasoning_effort=reasoning_effort,
                 )

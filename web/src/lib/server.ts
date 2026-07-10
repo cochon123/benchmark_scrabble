@@ -34,6 +34,19 @@ export function spawnBenchmark(runId: string, concurrency = 1) {
   child.unref();
 }
 
+export function spawnCliBenchmark(runId: string, agent: string, model?: string | null) {
+  const args = [...pythonArgs, "cli-run", "--run-id", runId, "--agent", agent];
+  if (model) {
+    args.push("--model", model);
+  }
+  const child = spawn("python3", args, {
+    cwd: repoRoot,
+    detached: true,
+    stdio: "ignore",
+  });
+  child.unref();
+}
+
 export function exportCsv(kind: "all" | "run", runId?: string) {
   const args = ["export", "--kind", kind];
   if (kind === "run" && runId) {

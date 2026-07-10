@@ -4,10 +4,10 @@ import argparse
 import json
 from pathlib import Path
 
-from .cli_agents import list_cli_agents
+from .cli_agents import list_cli_agents, search_cli_models
 from .config import DATASET_PATH, ensure_directories
 from .dataset import generate_dataset, load_dataset
-from .openrouter import model_search
+from .openrouter import model_search, search_cli2api_models
 from .quackle import setup_quackle
 from .runner import execute_run, prepare_cli_run, prepare_run
 from .storage import (
@@ -146,7 +146,30 @@ def main() -> None:
         elif args.name == "active-run":
             payload = active_run()
         elif args.name == "search-models":
-            payload = model_search(args.query or "")
+            query = args.query or ""
+            openrouter_hits = []
+            try:
+                openrouter_hits = [
+                    {
+                        "slug": item.get("slug"),
+                        "name": item.get("name"),
+                        "author": item.get("author"),
+                        "created_at": item.get("created_at"),
+                        "source": "openrouter",
+                    }
+                    for item in model_search(query)
+                    if item.get("slug")
+                ]
+            except Exception:
+                openrouter_hits = []
+            cli_hits = search_cli_models(query)
+            cli2api_hits = search_cli2api_models(query)
+            # CLI matches first when query looks CLI-ish, otherwise after OpenRouter.
+            q = query.strip().lower()
+            if q.startswith("cli") or "codex" in q or "opencode" in q or "cli2api" in q:
+                payload = cli_hits + cli2api_hits + openrouter_hits
+            else:
+                payload = openrouter_hits + cli_hits + cli2api_hits
         elif args.name == "cli-agents":
             payload = list_cli_agents()
         elif args.name == "cancel-run":

@@ -24,6 +24,7 @@ type SearchResult = {
   name: string;
   author: string;
   created_at?: string;
+  source?: string;
 };
 
 export function NewRunConsole() {
@@ -190,11 +191,11 @@ export function NewRunConsole() {
                   setSuggestions([]);
                 }
               }}
-              placeholder="openai/gpt-4o-mini"
+              placeholder="openai/gpt-4o-mini or cli/codex/gpt-5.6-terra"
             />
             {!!suggestions.length && (
               <div className={suggestionListClass}>
-                {suggestions.slice(0, 8).map((item) => (
+                {suggestions.slice(0, 10).map((item) => (
                   <button
                     key={item.slug}
                     type="button"
@@ -205,7 +206,14 @@ export function NewRunConsole() {
                       setSuggestions([]);
                     }}
                   >
-                    <strong>{item.name}</strong>
+                    <strong>
+                      {item.source === "cli"
+                        ? "CLI · "
+                        : item.source === "cli2api"
+                          ? "cli2api · "
+                          : ""}
+                      {item.name}
+                    </strong>
                     <span>{item.slug}</span>
                   </button>
                 ))}
@@ -289,7 +297,9 @@ export function NewRunConsole() {
           </div>
           <div className={streamCardClass}>
             <strong>Current reasoning</strong>
-            <p className={mutedClass}>Enabled by default when the model supports OpenRouter reasoning.</p>
+            <p className={mutedClass}>
+              Live reasoning from API models, CLI activity (Codex/OpenCode), or gateway streams when available.
+            </p>
             <AutoScrollPre className={preClass}>
               {streamedReasoning || "No reasoning stream yet."}
             </AutoScrollPre>

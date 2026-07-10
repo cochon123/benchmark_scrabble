@@ -277,7 +277,7 @@ export function RunLiveView({ run }: { run: LeaderboardRow }) {
           <div className={streamCardClass}>
             <strong>Current reasoning</strong>
             <p className={mutedClass}>
-              Reasoning stream when supported by the model.
+              Reasoning and CLI activity when the provider streams it.
               {streamTiming.lastReasoningMs !== null ? ` ${streamTiming.reasoningChars} chars by ${(streamTiming.lastReasoningMs / 1000).toFixed(1)}s.` : ""}
             </p>
             <AutoScrollPre className={preClass}>{streamedReasoning || "No reasoning stream yet."}</AutoScrollPre>
