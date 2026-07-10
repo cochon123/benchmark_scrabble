@@ -7,6 +7,7 @@ import time
 from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
 from typing import Any
 
+from .cli_agents import cli_metadata, run_cli_completion
 from .config import DATASET_PATH, get_openrouter_api_key, normalize_reasoning_effort, resolve_lexicon_path
 from .dataset import dataset_subset, load_dataset
 from .lexicon import Lexicon
@@ -206,10 +207,32 @@ def prepare_run(model: str, mode: str, boards: int | None, reasoning_effort: str
     )
 
 
-def execute_run(run: dict[str, Any], concurrency: int = 1) -> None:
+def prepare_cli_run(
+    agent: str,
+    mode: str,
+    boards: int | None,
+    model: str | None = None,
+    reasoning_effort: str | None = None,
+) -> dict[str, Any]:
+    if mode == "custom" and boards is None:
+        raise RuntimeError("Custom runs require an explicit --boards value.")
+    board_count = boards if boards is not None else {"smoke": 5, "full": 100}.get(mode, 100)
+    metadata = cli_metadata(agent, model, reasoning_effort=reasoning_effort)
+    return create_run(
+        model_id=metadata["model_id"],
+        model_name=metadata["model_name"],
+        company_slug=metadata["company_slug"],
+        release_date=metadata["release_date"],
+        reasoning_effort=metadata.get("reasoning_effort") or "cli",
+        mode=mode,
+        board_count=board_count,
+    )
+
+
+def execute_run(run: dict[str, Any], concurrency: int = 1, cli_agent: str | None = None, cli_model: str | None = None) -> None:
     dataset = dataset_subset(run["mode"], run["board_count"])
     lexicon = Lexicon.from_path(resolve_lexicon_path())
-    worker_count = max(1, min(int(concurrency or 1), len(dataset) or 1))
+    worker_count = 1 if cli_agent else max(1, min(int(concurrency or 1), len(dataset) or 1))
     update_run_status(run["id"], "running")
     append_log(
         run["id"],
@@ -220,6 +243,9 @@ def execute_run(run: dict[str, Any], concurrency: int = 1) -> None:
             "reasoning_effort": run.get("reasoning_effort", "medium"),
             "board_count": len(dataset),
             "concurrency": worker_count,
+            "runner": "cli" if cli_agent else "api",
+            "cli_agent": cli_agent,
+            "cli_model": cli_model,
         },
     )
 
@@ -237,6 +263,8 @@ def execute_run(run: dict[str, Any], concurrency: int = 1) -> None:
                     position,
                     index,
                     len(dataset),
+                    cli_agent=cli_agent,
+                    cli_model=cli_model,
                 )
                 _record_position_result(run["id"], index, len(dataset), position, board_result)
         else:
@@ -262,6 +290,8 @@ def execute_run(run: dict[str, Any], concurrency: int = 1) -> None:
                             position,
                             index,
                             len(dataset),
+                            cli_agent=None,
+                            cli_model=None,
                         )
                     ] = (index, position)
 
@@ -340,6 +370,8 @@ def _run_position(
     position: dict[str, Any],
     index: int,
     total: int,
+    cli_agent: str | None = None,
+    cli_model: str | None = None,
 ) -> dict[str, Any]:
     grid = grid_from_position(position["board"])
     attempt_trace: list[dict[str, Any]] = []
@@ -428,7 +460,9 @@ def _run_position(
 
         def on_status(message: str) -> None:
             with progress_lock:
-                if message.startswith("POST "):
+                if message.startswith("running "):
+                    progress["phase"] = message
+                elif message.startswith("POST "):
                     progress["phase"] = "contacting OpenRouter"
                 elif message.startswith("stream opened"):
                     progress["phase"] = "stream opened"
@@ -440,13 +474,23 @@ def _run_position(
                     progress["phase"] = message
 
         try:
-            response = chat_completion(
-                model_id,
-                messages,
-                reasoning_effort=reasoning_effort,
-                on_stream_event=on_stream_event,
-                on_status=on_status,
-            )
+            if cli_agent:
+                response = run_cli_completion(
+                    cli_agent,
+                    cli_model,
+                    messages,
+                    on_stream_event=on_stream_event,
+                    on_status=on_status,
+                    reasoning_effort=reasoning_effort,
+                )
+            else:
+                response = chat_completion(
+                    model_id,
+                    messages,
+                    reasoning_effort=reasoning_effort,
+                    on_stream_event=on_stream_event,
+                    on_status=on_status,
+                )
         except KeyboardInterrupt:
             stop_progress.set()
             progress_thread.join(timeout=0.1)
