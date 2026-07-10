@@ -474,17 +474,24 @@ def _fake_stream_content(
     word_delay_range: tuple[float, float] = WORD_STREAM_DELAY_RANGE,
 ) -> float:
     """Emit content word-by-word so the UI animates a full Codex agent_message blob."""
-    cursor = last_event_at
     lo, hi = word_delay_range
-    for chunk in iter_word_chunks(text):
-        now = time.perf_counter()
-        elapsed_ms = int((now - start) * 1000)
-        delta_ms = int((now - cursor) * 1000)
-        _emit_cli_event(on_stream_event, "content_delta", chunk, elapsed_ms, delta_ms, trace_events, source)
-        cursor = now
-        if hi > 0:
-            time.sleep(random.uniform(lo, hi) if hi > lo else lo)
-    return cursor
+
+    def emit_chunks() -> float:
+        cursor = last_event_at
+        for chunk in iter_word_chunks(text):
+            now = time.perf_counter()
+            elapsed_ms = int((now - start) * 1000)
+            delta_ms = int((now - cursor) * 1000)
+            _emit_cli_event(on_stream_event, "content_delta", chunk, elapsed_ms, delta_ms, trace_events, source)
+            cursor = now
+            if hi > 0:
+                time.sleep(random.uniform(lo, hi) if hi > lo else lo)
+        return cursor
+
+    if hi <= 0:
+        return emit_chunks()
+    threading.Thread(target=emit_chunks, daemon=True).start()
+    return last_event_at
 
 
 def iter_word_chunks(text: str) -> list[str]:

@@ -24,7 +24,8 @@ export async function GET(request: Request) {
   try {
     const payload = runPythonJson<SearchResult[]>(["api", "search-models", "--query", query]);
     return NextResponse.json(payload);
-  } catch {
+  } catch (error) {
+    console.error("Python model search failed, falling back to OpenRouter:", error);
     // Fallback: OpenRouter frontend search only (no CLI).
     try {
       const response = await fetch(
@@ -40,7 +41,8 @@ export async function GET(request: Request) {
         source: "openrouter",
       }));
       return NextResponse.json(models);
-    } catch {
+    } catch (error) {
+      console.error("OpenRouter model search also failed:", error);
       return NextResponse.json([]);
     }
   }
