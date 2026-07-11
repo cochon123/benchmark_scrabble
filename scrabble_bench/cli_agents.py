@@ -436,7 +436,24 @@ def _run_streaming_process(
                     trace_events,
                     event_type,
                     word_delay_range=word_delay_range,
+                    delta_event_type="content_delta",
                 )
+            elif event_type in _REASONING_ITEM_TYPES:
+                # Real model reasoning summary — fake-stream like content.
+                cleaned = text.replace("<!-- -->", "").replace("<!--\n-->", "").strip()
+                if cleaned:
+                    crumb = cleaned if cleaned.endswith("\n") else f"{cleaned}\n"
+                    reasoning_parts.append(crumb)
+                    last_event_at = _fake_stream_content(
+                        crumb,
+                        on_stream_event,
+                        start,
+                        last_event_at,
+                        trace_events,
+                        event_type,
+                        word_delay_range=word_delay_range,
+                        delta_event_type="reasoning_delta",
+                    )
             else:
                 crumb = text if text.endswith("\n") else f"{text}\n"
                 reasoning_parts.append(crumb)
@@ -472,26 +489,28 @@ def _fake_stream_content(
     trace_events: list[dict[str, Any]],
     source: str,
     word_delay_range: tuple[float, float] = WORD_STREAM_DELAY_RANGE,
+    delta_event_type: str = "content_delta",
 ) -> float:
-    """Emit content word-by-word so the UI animates a full Codex agent_message blob."""
+    """Emit text word-by-word so the UI animates a full Codex blob (content or reasoning)."""
     lo, hi = word_delay_range
-
-    def emit_chunks() -> float:
-        cursor = last_event_at
-        for chunk in iter_word_chunks(text):
-            now = time.perf_counter()
-            elapsed_ms = int((now - start) * 1000)
-            delta_ms = int((now - cursor) * 1000)
-            _emit_cli_event(on_stream_event, "content_delta", chunk, elapsed_ms, delta_ms, trace_events, source)
-            cursor = now
-            if hi > 0:
-                time.sleep(random.uniform(lo, hi) if hi > lo else lo)
-        return cursor
-
-    if hi <= 0:
-        return emit_chunks()
-    threading.Thread(target=emit_chunks, daemon=True).start()
-    return last_event_at
+    cursor = last_event_at
+    for chunk in iter_word_chunks(text):
+        now = time.perf_counter()
+        elapsed_ms = int((now - start) * 1000)
+        delta_ms = int((now - cursor) * 1000)
+        _emit_cli_event(
+            on_stream_event,
+            delta_event_type,
+            chunk,
+            elapsed_ms,
+            delta_ms,
+            trace_events,
+            source,
+        )
+        cursor = now
+        if hi > 0:
+            time.sleep(random.uniform(lo, hi) if hi > lo else lo)
+    return cursor
 
 
 def iter_word_chunks(text: str) -> list[str]:
@@ -735,6 +754,17 @@ def _command_for_agent(
     effort = (reasoning_effort or "").strip().lower()
     if effort and effort not in {"cli", "none"}:
         command.extend(["-c", f"model_reasoning_effort={effort}"])
+    # Effort alone does not publish summaries on JSONL — enable them explicitly.
+    command.extend(
+        [
+            "-c",
+            "model_reasoning_summary=detailed",
+            "-c",
+            "model_supports_reasoning_summaries=true",
+            "-c",
+            "hide_agent_reasoning=false",
+        ]
+    )
     command.append(prompt)
     return command
 

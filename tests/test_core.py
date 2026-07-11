@@ -169,6 +169,33 @@ class CodexStreamTests(unittest.TestCase):
         self.assertEqual([e["type"] for e in emitted], ["content_delta"] * 3)
         self.assertEqual("".join(e["text"] for e in emitted), "hello stream world")
 
+    def test_fake_stream_reasoning_deltas(self) -> None:
+        from scrabble_bench.cli_agents import _fake_stream_content
+
+        emitted: list[dict] = []
+        _fake_stream_content(
+            "thinking about moves",
+            emitted.append,
+            start=0.0,
+            last_event_at=0.0,
+            trace_events=[],
+            source="reasoning",
+            word_delay_range=(0.0, 0.0),
+            delta_event_type="reasoning_delta",
+        )
+        self.assertEqual([e["type"] for e in emitted], ["reasoning_delta"] * 3)
+        self.assertEqual("".join(e["text"] for e in emitted), "thinking about moves")
+
+    def test_codex_command_enables_reasoning_summaries(self) -> None:
+        from scrabble_bench.cli_agents import CLI_AGENTS, _command_for_agent
+
+        cmd = _command_for_agent(CLI_AGENTS["codex"], "gpt-5.6-terra", "hi", reasoning_effort="low")
+        joined = " ".join(cmd)
+        self.assertIn("model_reasoning_summary=detailed", joined)
+        self.assertIn("model_supports_reasoning_summaries=true", joined)
+        self.assertIn("hide_agent_reasoning=false", joined)
+        self.assertIn("model_reasoning_effort=low", joined)
+
     def test_last_agent_message_is_content(self) -> None:
         text, channel, event_type = parse_codex_stream_event(
             '{"type":"turn.completed","last_agent_message":"final answer"}'
