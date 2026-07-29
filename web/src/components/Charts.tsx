@@ -23,11 +23,19 @@ function compactLeaderboardModelName(row: LeaderboardRow) {
     return row.model_name.replace(/\s*\([^)]*\)(?:\s*\[[^\]]+\])?$/, "");
   }
 
-  return model
-    .split("/")
-    .at(-1)!
+  const slug = model.split("/").at(-1)!;
+  const familyVersion = slug.match(/^(gpt|glm|qwen|llama)-([0-9][^-]*)(?:-(.*))?$/i);
+  if (familyVersion) {
+    const suffix = familyVersion[3]
+      ?.split("-")
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ");
+    return `${familyVersion[1].toUpperCase()}-${familyVersion[2]}${suffix ? ` ${suffix}` : ""}`;
+  }
+
+  return slug
     .split("-")
-    .map((part) => (/^(gpt|glm|qwen|llama)$/i.test(part) ? part.toUpperCase() : part.charAt(0).toUpperCase() + part.slice(1)))
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
 }
 
