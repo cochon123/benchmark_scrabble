@@ -12,6 +12,42 @@ function stripCompanyPrefix(name: string) {
   return name.replace(/^[^:]+:\s*/, "");
 }
 
+function compactLeaderboardModelName(row: LeaderboardRow) {
+  const cliName = row.model_name.match(/^(?:Codex CLI|OpenCode|Claude Code)\s*\((.+)\)(?:\s*\[[^\]]+\])?$/i);
+  if (!cliName) {
+    return stripCompanyPrefix(row.model_name);
+  }
+
+  const model = cliName[1];
+  if (model.toLowerCase() === "default") {
+    return row.model_name.replace(/\s*\([^)]*\)(?:\s*\[[^\]]+\])?$/, "");
+  }
+
+  return model
+    .split("/")
+    .at(-1)!
+    .split("-")
+    .map((part) => (/^(gpt|glm|qwen|llama)$/i.test(part) ? part.toUpperCase() : part.charAt(0).toUpperCase() + part.slice(1)))
+    .join(" ");
+}
+
+function leaderboardRunDetails(row: LeaderboardRow) {
+  return [
+    `Name: ${row.model_name}`,
+    `Model ID: ${row.model_id}`,
+    `Provider: ${row.company_slug}`,
+    `Release date: ${row.release_date ? formatDate(row.release_date) : "Unknown"}`,
+    `Reasoning: ${row.reasoning_effort}`,
+    `Status: ${row.status}`,
+    `Mode: ${row.mode}`,
+    `Boards: ${row.board_count}`,
+    `Score: ${formatPercent(row.score_pct)} (${formatNumber(row.raw_points)} / ${formatNumber(row.optimal_raw_points)} points)`,
+    `Tokens: ${formatNumber(row.min_total_tokens)} min · ${formatNumber(row.avg_total_tokens)} avg · ${formatNumber(row.max_total_tokens)} max`,
+    `Started: ${row.started_at}`,
+    `Run ID: ${row.run_id}`,
+  ].join("\n");
+}
+
 type TooltipState = {
   x: number;
   y: number;
@@ -105,30 +141,37 @@ export function LeaderboardBars({ rows }: { rows: LeaderboardRow[] }) {
         </a>
       </div>
       <div className={runListClass}>
-        {rows.map((row) => (
-          <a
-            key={row.run_id}
-            href={`/runs/${row.run_id}`}
-            className="grid items-center gap-3 min-[900px]:grid-cols-[minmax(0,280px)_auto_minmax(0,1fr)]"
-          >
-            <ModelBadge companySlug={row.company_slug} modelName={row.model_name} reasoningEffort={row.reasoning_effort} />
-            <span
-              className="grid h-6 w-6 place-items-center rounded-full border border-[color:var(--line)] text-[0.8rem] font-bold text-[color:var(--muted)]"
-              title={`${row.mode} · ${row.status}`}
-              aria-label={`${row.mode} · ${row.status}`}
+        {rows.map((row) => {
+          const runDetails = leaderboardRunDetails(row);
+          return (
+            <a
+              key={row.run_id}
+              href={`/runs/${row.run_id}`}
+              className="grid items-center gap-3 min-[900px]:grid-cols-[minmax(0,280px)_auto_minmax(0,1fr)]"
             >
-              ?
-            </span>
-            <div className="overflow-hidden rounded-full bg-[color:var(--chart-grid)]">
-              <div
-                className="min-w-max rounded-full bg-[color:var(--accent)] px-[14px] py-2 font-bold text-white"
-                style={{ width: `${Math.max(row.score_pct, 2)}%` }}
+              <ModelBadge
+                companySlug={row.company_slug}
+                modelName={compactLeaderboardModelName(row)}
+                reasoningEffort={row.reasoning_effort}
+              />
+              <span
+                className="grid h-6 w-6 place-items-center rounded-full border border-[color:var(--line)] text-[0.8rem] font-bold text-[color:var(--muted)]"
+                title={runDetails}
+                aria-label={runDetails}
               >
-                {formatPercent(row.score_pct)}
+                ?
+              </span>
+              <div className="overflow-hidden rounded-full bg-[color:var(--chart-grid)]">
+                <div
+                  className="min-w-max rounded-full bg-[color:var(--accent)] px-[14px] py-2 font-bold text-white"
+                  style={{ width: `${Math.max(row.score_pct, 2)}%` }}
+                >
+                  {formatPercent(row.score_pct)}
+                </div>
               </div>
-            </div>
-          </a>
-        ))}
+            </a>
+          );
+        })}
       </div>
     </div>
   );
