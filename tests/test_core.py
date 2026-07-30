@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scrabble_bench.cli_agents import iter_word_chunks, parse_codex_stream_event
+from scrabble_bench.cli_agents import CLI_TIMEOUT_SECONDS, iter_word_chunks, parse_codex_stream_event
 from scrabble_bench.lexicon import Lexicon
 from scrabble_bench.openrouter import normalize_model_for_benchmark
 from scrabble_bench.runner import _retry_feedback, parse_tool_payload, prompt_for_position
@@ -124,6 +124,9 @@ class LexiconTests(unittest.TestCase):
 
 
 class CodexStreamTests(unittest.TestCase):
+    def test_cli_timeout_allows_long_reasoning(self) -> None:
+        self.assertGreaterEqual(CLI_TIMEOUT_SECONDS, 30 * 60)
+
     def test_parse_activity_as_reasoning_before_content(self) -> None:
         lines = [
             '{"type":"thread.started","thread_id":"t1"}',

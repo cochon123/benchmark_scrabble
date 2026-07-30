@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 
-CLI_TIMEOUT_SECONDS = 300
+CLI_TIMEOUT_SECONDS = 30 * 60
 # Delay between fake-streamed words so the UI animates (Codex emits whole messages).
 WORD_STREAM_DELAY_RANGE = (0.015, 0.040)
 _CONTENT_ITEM_TYPES = frozenset({"agent_message", "assistant_message", "message"})
