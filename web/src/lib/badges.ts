@@ -24,9 +24,34 @@ const palette: Record<string, BadgeTheme> = {
   unknown: { label: "??", bg: "#334155", fg: "#f8fbff" },
 };
 
-export function badgeTheme(companySlug: string) {
-  return palette[companySlug] ?? {
-    label: companySlug.slice(0, 2).toUpperCase() || "??",
+const cliProviderPatterns: Array<[RegExp, string]> = [
+  [/\b(codex|gpt[-\s])/, "openai"],
+  [/\bclaude\b/, "anthropic"],
+  [/\b(gemini|google)\b/, "google"],
+  [/\bdeepseek\b/, "deepseek"],
+  [/\b(grok|xai)\b/, "xai"],
+  [/\bqwen\b/, "qwen"],
+  [/\b(glm|z-ai|zai)\b/, "z-ai"],
+  [/\b(llama|meta)\b/, "meta"],
+  [/\bmistral\b/, "mistralai"],
+  [/\b(kimi|moonshot)\b/, "moonshotai"],
+  [/\bminimax\b/, "minimax"],
+  [/\b(mimo|xiaomi)\b/, "xiaomi"],
+];
+
+function inferredCliProvider(companySlug: string, modelName: string) {
+  if (companySlug !== "cli" && companySlug !== "cli2api") {
+    return companySlug;
+  }
+
+  const name = modelName.toLowerCase();
+  return cliProviderPatterns.find(([pattern]) => pattern.test(name))?.[1] ?? companySlug;
+}
+
+export function badgeTheme(companySlug: string, modelName = "") {
+  const providerSlug = inferredCliProvider(companySlug, modelName);
+  return palette[providerSlug] ?? {
+    label: providerSlug.slice(0, 2).toUpperCase() || "??",
     bg: "#274868",
     fg: "#edf6ff",
   };

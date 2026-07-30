@@ -9,7 +9,7 @@ export function ModelBadge({
   modelName: string;
   reasoningEffort?: string | null;
 }) {
-  const theme = badgeTheme(companySlug);
+  const theme = badgeTheme(companySlug, modelName);
   const displayName = modelName.replace(/^[^:]+:\s*/, "");
   return (
     <span className="inline-flex min-w-0 items-center gap-2.5 font-bold">

@@ -292,7 +292,7 @@ export function ScatterChart({ rows }: { rows: LeaderboardRow[] }) {
           Score
         </text>
         {rows.map((row) => {
-          const theme = badgeTheme(row.company_slug);
+          const theme = badgeTheme(row.company_slug, row.model_name);
           const x = left + (row.avg_total_tokens / maxTokens) * 650;
           const y = bottom - (row.score_pct / 100) * 220;
           const lines = [
@@ -393,7 +393,7 @@ export function TimelineChart({ rows }: { rows: LeaderboardRow[] }) {
           Score
         </text>
         {datedRows.map((row) => {
-          const theme = badgeTheme(row.company_slug);
+          const theme = badgeTheme(row.company_slug, row.model_name);
           const time = new Date(row.release_date as string).getTime();
           const x = left + ((time - min) / Math.max(max - min, 1)) * 650;
           const y = bottom - (row.score_pct / 100) * 190;
