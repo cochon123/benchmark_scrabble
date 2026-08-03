@@ -22,3 +22,13 @@ export function formatNumber(value: number) {
   }
   return new Intl.NumberFormat("en-US").format(value);
 }
+
+export function formatUsd(value: number) {
+  const maximumFractionDigits = value > 0 && value < 0.01 ? 6 : 4;
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits,
+  }).format(value);
+}

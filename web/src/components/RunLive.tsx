@@ -17,6 +17,7 @@ export function RunLive({ run }: { run: RunDetail }) {
     avg_total_tokens: run.avg_total_tokens,
     min_total_tokens: run.min_total_tokens,
     max_total_tokens: run.max_total_tokens,
+    total_estimated_cost_usd: run.total_estimated_cost_usd,
     status: run.status,
     mode: run.mode,
     board_count: run.board_count,

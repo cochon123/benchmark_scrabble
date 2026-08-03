@@ -6,6 +6,7 @@ import { useState } from "react";
 import { BoardView } from "@/components/BoardView";
 import { mutedClass, preClass, primaryButtonClass, secondaryButtonClass, titleClass } from "@/lib/ui";
 import { Position, RunBoardResult } from "@/lib/types";
+import { formatUsd } from "@/lib/format";
 
 function formatMs(value?: number | null) {
   if (value === undefined || value === null) {
@@ -70,6 +71,7 @@ export function RunDetailBoardCard({
           <h2 className={titleClass}>{result.position_id}</h2>
           <p className={mutedClass}>
             model {result.move_score} / optimal {result.optimal_score} · retry {result.retry_used ? "yes" : "no"}
+            {result.estimated_cost_usd !== null ? ` · ${formatUsd(result.estimated_cost_usd)} estimated` : ""}
           </p>
         </div>
         <button type="button" className={secondaryButtonClass} onClick={() => setCompareToBest((value) => !value)}>

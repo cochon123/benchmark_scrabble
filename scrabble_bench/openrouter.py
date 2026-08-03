@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import time
 import urllib.parse
 import urllib.request
@@ -226,16 +227,39 @@ def model_supports_reasoning(model_id: str) -> bool:
     return False
 
 
+CLI2API_MODEL_METADATA = {
+    "composer-2.5": ("Composer 2.5", "cursor", "2026-05-18T00:00:00+00:00"),
+    "deepseek-v4-flash": ("DeepSeek V4 Flash", "deepseek", "2026-04-24T00:00:00+00:00"),
+    "glm-5-turbo": ("GLM 5 Turbo", "z-ai", "2026-03-15T00:00:00+00:00"),
+    "glm-5.2": ("GLM 5.2", "z-ai", "2026-06-16T00:00:00+00:00"),
+    "grok-4.5": ("Grok 4.5", "xai", "2026-07-08T00:00:00+00:00"),
+    "kimi-k3": ("Kimi K3", "moonshotai", "2026-07-16T00:00:00+00:00"),
+}
+
+
+def cli2api_model_metadata(model_id: str) -> dict[str, Any]:
+    local = model_id.removeprefix("cli2api/")
+    slug = local.rsplit("/", 1)[-1].lower().removeprefix("cursor-")
+    slug = re.sub(r"-(?:xhigh|high|medium|low|max|free)$", "", slug)
+    known = CLI2API_MODEL_METADATA.get(slug)
+    if known:
+        name, company_slug, release_date = known
+    else:
+        name = " ".join(part.capitalize() for part in slug.split("-")) or local
+        company_slug = "cli2api"
+        release_date = None
+    return {
+        "model_id": model_id,
+        "model_name": name,
+        "company_slug": company_slug,
+        "release_date": release_date,
+        "supports_reasoning": True,
+    }
+
+
 def fetch_model_metadata(model_id: str, reasoning_effort: str | None = None) -> dict[str, Any]:
     if model_id.startswith("cli2api/"):
-        local = model_id[len("cli2api/") :]
-        return {
-            "model_id": model_id,
-            "model_name": f"cli2api ({local})",
-            "company_slug": "cli2api",
-            "release_date": None,
-            "supports_reasoning": True,
-        }
+        return cli2api_model_metadata(model_id)
     effective_model = normalize_model_for_benchmark(model_id, reasoning_effort)
     if effective_model == "demo/mock":
         return {
@@ -564,6 +588,7 @@ def _cli2api_chat_completion(
         "temperature": 0,
         "messages": messages,
         "stream": True,
+        "stream_options": {"include_usage": True},
     }
     url = f"{base}/chat/completions"
     start = time.perf_counter()

@@ -31,6 +31,14 @@ function reasoningEffortSelect(db: Database.Database) {
   return hasColumn ? "reasoning_effort" : "'high' AS reasoning_effort";
 }
 
+function estimatedCostSelect(db: Database.Database) {
+  const hasColumn = db
+    .prepare("PRAGMA table_info(runs)")
+    .all()
+    .some((row) => (row as { name?: string }).name === "total_estimated_cost_usd");
+  return hasColumn ? "total_estimated_cost_usd" : "0 AS total_estimated_cost_usd";
+}
+
 export function getDataset(): Position[] {
   if (!fs.existsSync(datasetPath)) {
     datasetCache = null;
@@ -57,6 +65,7 @@ export function getLeaderboard(): LeaderboardRow[] {
       SELECT id AS run_id, company_slug, model_id, model_name, release_date,
              score_pct, raw_points, optimal_raw_points,
              avg_total_tokens, min_total_tokens, max_total_tokens,
+             ${estimatedCostSelect(db)},
              status, mode, board_count, started_at, ${reasoningEffortSelect(db)}
       FROM runs
       ORDER BY score_pct DESC, started_at DESC
@@ -77,6 +86,7 @@ export function getActiveRuns(): LeaderboardRow[] {
       SELECT id AS run_id, company_slug, model_id, model_name, release_date,
              score_pct, raw_points, optimal_raw_points,
              avg_total_tokens, min_total_tokens, max_total_tokens,
+             ${estimatedCostSelect(db)},
              status, mode, board_count, started_at, ${reasoningEffortSelect(db)}
       FROM runs
       WHERE status IN ('queued', 'running')
@@ -102,10 +112,13 @@ export function getRun(runId: string): RunDetail | null {
   return {
     ...run,
     reasoning_effort: run.reasoning_effort ?? "high",
+    total_estimated_cost_usd: run.total_estimated_cost_usd ?? 0,
     board_results: boardResults.map((result) => ({
       ...result,
       parsed_move: result.parsed_move ? JSON.parse(result.parsed_move) : null,
       attempt_trace: JSON.parse(result.attempt_trace),
+      estimated_cost_usd: result.estimated_cost_usd ?? null,
+      cost_details: typeof result.cost_details === "string" ? JSON.parse(result.cost_details) : result.cost_details ?? null,
     })),
   };
 }

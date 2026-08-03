@@ -53,6 +53,7 @@ def init_db() -> None:
               avg_total_tokens REAL NOT NULL DEFAULT 0,
               min_total_tokens INTEGER NOT NULL DEFAULT 0,
               max_total_tokens INTEGER NOT NULL DEFAULT 0,
+              total_estimated_cost_usd REAL NOT NULL DEFAULT 0,
               error TEXT
             );
 
@@ -72,14 +73,28 @@ def init_db() -> None:
               prompt_tokens INTEGER NOT NULL DEFAULT 0,
               completion_tokens INTEGER NOT NULL DEFAULT 0,
               total_tokens INTEGER NOT NULL DEFAULT 0,
+              estimated_cost_usd REAL,
+              cost_details TEXT,
               latency_ms INTEGER NOT NULL DEFAULT 0,
               created_at TEXT NOT NULL
             );
             """
         )
-        columns = {row["name"] for row in connection.execute("PRAGMA table_info(runs)").fetchall()}
-        if "reasoning_effort" not in columns:
-            connection.execute("ALTER TABLE runs ADD COLUMN reasoning_effort TEXT NOT NULL DEFAULT 'high'")
+        def add_column_if_missing(table: str, column: str, definition: str) -> None:
+            columns = {row["name"] for row in connection.execute(f"PRAGMA table_info({table})").fetchall()}
+            if column in columns:
+                return
+            try:
+                connection.execute(f"ALTER TABLE {table} ADD COLUMN {column} {definition}")
+            except sqlite3.OperationalError as exc:
+                # Another run can win the migration race after our PRAGMA check.
+                if "duplicate column name" not in str(exc).lower():
+                    raise
+
+        add_column_if_missing("runs", "reasoning_effort", "TEXT NOT NULL DEFAULT 'high'")
+        add_column_if_missing("runs", "total_estimated_cost_usd", "REAL NOT NULL DEFAULT 0")
+        add_column_if_missing("board_results", "estimated_cost_usd", "REAL")
+        add_column_if_missing("board_results", "cost_details", "TEXT")
         connection.commit()
 
 
@@ -186,12 +201,14 @@ def record_board_result(run_id: str, result: dict[str, Any]) -> None:
             INSERT INTO board_results (
               run_id, position_id, attempt_index, raw_response, parsed_move, validation_error,
               attempt_trace, retry_used, move_score, optimal_score, is_optimal,
-              prompt_tokens, completion_tokens, total_tokens, latency_ms, created_at
+              prompt_tokens, completion_tokens, total_tokens, estimated_cost_usd, cost_details,
+              latency_ms, created_at
             )
             VALUES (
               :run_id, :position_id, :attempt_index, :raw_response, :parsed_move, :validation_error,
               :attempt_trace, :retry_used, :move_score, :optimal_score, :is_optimal,
-              :prompt_tokens, :completion_tokens, :total_tokens, :latency_ms, :created_at
+              :prompt_tokens, :completion_tokens, :total_tokens, :estimated_cost_usd, :cost_details,
+              :latency_ms, :created_at
             )
             """,
             {
@@ -209,6 +226,8 @@ def record_board_result(run_id: str, result: dict[str, Any]) -> None:
                 "prompt_tokens": result["prompt_tokens"],
                 "completion_tokens": result["completion_tokens"],
                 "total_tokens": result["total_tokens"],
+                "estimated_cost_usd": result.get("estimated_cost_usd"),
+                "cost_details": json.dumps(result.get("cost_details")) if result.get("cost_details") else None,
                 "latency_ms": result["latency_ms"],
                 "created_at": utc_now(),
             },
@@ -221,7 +240,7 @@ def refresh_run_aggregate(run_id: str) -> None:
     with connect() as connection:
         rows = connection.execute(
             """
-            SELECT move_score, optimal_score, total_tokens
+            SELECT move_score, optimal_score, total_tokens, estimated_cost_usd
             FROM board_results
             WHERE run_id = ?
             """,
@@ -232,12 +251,14 @@ def refresh_run_aggregate(run_id: str) -> None:
         raw_points = sum(row["move_score"] for row in rows)
         optimal_points = sum(row["optimal_score"] for row in rows)
         token_values = [row["total_tokens"] for row in rows]
+        total_estimated_cost = sum(float(row["estimated_cost_usd"] or 0) for row in rows)
         score_pct = (100.0 * raw_points / optimal_points) if optimal_points else 0.0
         connection.execute(
             """
             UPDATE runs
             SET raw_points = ?, optimal_raw_points = ?, score_pct = ?,
-                avg_total_tokens = ?, min_total_tokens = ?, max_total_tokens = ?
+                avg_total_tokens = ?, min_total_tokens = ?, max_total_tokens = ?,
+                total_estimated_cost_usd = ?
             WHERE id = ?
             """,
             (
@@ -247,6 +268,7 @@ def refresh_run_aggregate(run_id: str) -> None:
                 sum(token_values) / len(token_values),
                 min(token_values),
                 max(token_values),
+                total_estimated_cost,
                 run_id,
             ),
         )
@@ -277,6 +299,7 @@ def get_run(run_id: str) -> dict[str, Any] | None:
         item = dict(row)
         item["parsed_move"] = json.loads(item["parsed_move"]) if item["parsed_move"] else None
         item["attempt_trace"] = json.loads(item["attempt_trace"])
+        item["cost_details"] = json.loads(item["cost_details"]) if item.get("cost_details") else None
         payload["board_results"].append(item)
     return payload
 
@@ -289,6 +312,7 @@ def leaderboard() -> list[dict[str, Any]]:
             SELECT id AS run_id, company_slug, model_id, model_name, release_date,
                    score_pct, raw_points, optimal_raw_points,
                    avg_total_tokens, min_total_tokens, max_total_tokens,
+                   total_estimated_cost_usd,
                    status, mode, board_count, started_at, reasoning_effort
             FROM runs
             ORDER BY score_pct DESC, started_at DESC
@@ -313,6 +337,7 @@ def export_all_csv(path: Path) -> Path:
                 "avg_total_tokens",
                 "min_total_tokens",
                 "max_total_tokens",
+                "total_estimated_cost_usd",
             ],
         )
         writer.writeheader()
@@ -328,6 +353,7 @@ def export_all_csv(path: Path) -> Path:
                     "avg_total_tokens": row["avg_total_tokens"],
                     "min_total_tokens": row["min_total_tokens"],
                     "max_total_tokens": row["max_total_tokens"],
+                    "total_estimated_cost_usd": row["total_estimated_cost_usd"],
                 }
             )
     return path
@@ -350,6 +376,9 @@ def export_run_csv(run_id: str, path: Path) -> Path:
                 "prompt_tokens",
                 "completion_tokens",
                 "total_tokens",
+                "estimated_cost_usd",
+                "pricing_model",
+                "pricing_fetched_at",
                 "latency_ms",
                 "validation_error",
             ],
@@ -366,6 +395,9 @@ def export_run_csv(run_id: str, path: Path) -> Path:
                     "prompt_tokens": result["prompt_tokens"],
                     "completion_tokens": result["completion_tokens"],
                     "total_tokens": result["total_tokens"],
+                    "estimated_cost_usd": result["estimated_cost_usd"],
+                    "pricing_model": (result.get("cost_details") or {}).get("pricing_model"),
+                    "pricing_fetched_at": (result.get("cost_details") or {}).get("pricing_fetched_at"),
                     "latency_ms": result["latency_ms"],
                     "validation_error": result["validation_error"],
                 }

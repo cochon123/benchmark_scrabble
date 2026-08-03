@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { runManagementEnabled } from "@/lib/deployment";
 import { runPythonJson } from "@/lib/server";
 
 export const runtime = "nodejs";
@@ -14,6 +15,9 @@ type SearchResult = {
 };
 
 export async function GET(request: Request) {
+  if (!runManagementEnabled()) {
+    return NextResponse.json({ error: "Not found." }, { status: 404 });
+  }
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("q") ?? "";
   if (!query) {

@@ -13,7 +13,7 @@ function stripCompanyPrefix(name: string) {
 }
 
 function compactLeaderboardModelName(row: LeaderboardRow) {
-  const cliName = row.model_name.match(/^(?:Codex CLI|OpenCode|Claude Code)\s*\((.+)\)(?:\s*\[[^\]]+\])?$/i);
+  const cliName = row.model_name.match(/^(?:Codex CLI|OpenCode|Claude Code|cli2api)\s*\((.+)\)(?:\s*\[[^\]]+\])?$/i);
   if (!cliName) {
     return stripCompanyPrefix(row.model_name);
   }
@@ -23,7 +23,11 @@ function compactLeaderboardModelName(row: LeaderboardRow) {
     return row.model_name.replace(/\s*\([^)]*\)(?:\s*\[[^\]]+\])?$/, "");
   }
 
-  const slug = model.split("/").at(-1)!;
+  const slug = model
+    .split("/")
+    .at(-1)!
+    .replace(/^cursor-/i, "")
+    .replace(/-(?:xhigh|high|medium|low|max|free)$/i, "");
   const familyVersion = slug.match(/^(gpt|glm|qwen|llama)-([0-9][^-]*)(?:-(.*))?$/i);
   if (familyVersion) {
     const suffix = familyVersion[3]
@@ -409,7 +413,7 @@ export function TimelineChart({ rows }: { rows: LeaderboardRow[] }) {
               onPointerEnter={() => setTooltip({ x, y, title: stripCompanyPrefix(row.model_name), lines })}
               onPointerLeave={() => setTooltip(null)}
             >
-              <rect x={x - 14} y={y - 14} width="28" height="28" rx="8" fill="#ffffff" stroke={theme.bg} strokeWidth="2" />
+              <circle cx={x} cy={y} r="16" fill="#ffffff" stroke={theme.bg} strokeWidth="2.5" />
               {theme.logoSrc ? (
                 <foreignObject x={x - 10} y={y - 10} width="20" height="20">
                   <div className="flex h-full w-full items-center justify-center">

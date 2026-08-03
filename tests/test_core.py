@@ -9,7 +9,7 @@ from unittest.mock import patch
 from scrabble_bench import storage
 from scrabble_bench.cli_agents import CLI_TIMEOUT_SECONDS, iter_word_chunks, parse_codex_stream_event
 from scrabble_bench.lexicon import Lexicon
-from scrabble_bench.openrouter import normalize_model_for_benchmark
+from scrabble_bench.openrouter import fetch_model_metadata, normalize_model_for_benchmark
 from scrabble_bench.runner import _retry_feedback, parse_tool_payload, prompt_for_position
 from scrabble_bench.solver import BoardTile, empty_grid, validate_and_score_move
 
@@ -57,6 +57,12 @@ class ParserTests(unittest.TestCase):
             normalize_model_for_benchmark("deepseek/deepseek-v4-flash:thinking", "none"),
             "deepseek/deepseek-v4-flash",
         )
+
+    def test_cli2api_metadata_uses_underlying_model_identity(self) -> None:
+        metadata = fetch_model_metadata("cli2api/cursor/kimi-k3-high", "high")
+        self.assertEqual(metadata["model_name"], "Kimi K3")
+        self.assertEqual(metadata["company_slug"], "moonshotai")
+        self.assertEqual(metadata["release_date"], "2026-07-16T00:00:00+00:00")
 
 
 class SolverTests(unittest.TestCase):
@@ -243,6 +249,39 @@ class ConcurrentRunStorageTests(unittest.TestCase):
                     journal_mode = connection.execute("PRAGMA journal_mode").fetchone()[0]
                 self.assertEqual(active_count, 2)
                 self.assertEqual(journal_mode, "wal")
+
+    def test_cost_and_pricing_snapshot_are_persisted_and_aggregated(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            db_path = Path(temp_dir) / "benchmark.sqlite"
+            with patch.object(storage, "DB_PATH", db_path):
+                run = self._create_run(99)
+                storage.record_board_result(run["id"], {
+                    "position_id": "position-1",
+                    "attempt_index": 1,
+                    "raw_response": "{}",
+                    "parsed_move": None,
+                    "validation_error": "invalid",
+                    "attempt_trace": [],
+                    "retry_used": False,
+                    "move_score": 0,
+                    "optimal_score": 10,
+                    "is_optimal": 0,
+                    "prompt_tokens": 100,
+                    "completion_tokens": 20,
+                    "total_tokens": 120,
+                    "estimated_cost_usd": 0.00123,
+                    "cost_details": {
+                        "pricing_model": "openai/test",
+                        "pricing_fetched_at": "2026-08-03T00:00:00+00:00",
+                    },
+                    "latency_ms": 50,
+                })
+                persisted = storage.get_run(run["id"])
+
+        self.assertIsNotNone(persisted)
+        assert persisted is not None
+        self.assertAlmostEqual(persisted["total_estimated_cost_usd"], 0.00123)
+        self.assertEqual(persisted["board_results"][0]["cost_details"]["pricing_model"], "openai/test")
 
 
 if __name__ == "__main__":

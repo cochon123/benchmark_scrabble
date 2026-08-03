@@ -47,6 +47,7 @@ export type LeaderboardRow = {
   avg_total_tokens: number;
   min_total_tokens: number;
   max_total_tokens: number;
+  total_estimated_cost_usd: number;
   status: string;
   mode: string;
   board_count: number;
@@ -83,6 +84,13 @@ export type RunBoardResult = {
     };
     status: string;
     error?: string;
+    usage?: {
+      prompt_tokens?: number;
+      completion_tokens?: number;
+      total_tokens?: number;
+      cost?: number;
+      cost_details?: Record<string, unknown>;
+    };
   }>;
   retry_used: number;
   move_score: number;
@@ -91,6 +99,12 @@ export type RunBoardResult = {
   prompt_tokens: number;
   completion_tokens: number;
   total_tokens: number;
+  estimated_cost_usd: number | null;
+  cost_details: {
+    pricing_model?: string;
+    pricing_fetched_at?: string;
+    attempt_costs?: number[];
+  } | null;
   latency_ms: number;
   created_at: string;
 };
@@ -113,6 +127,7 @@ export type RunDetail = {
   avg_total_tokens: number;
   min_total_tokens: number;
   max_total_tokens: number;
+  total_estimated_cost_usd: number;
   error?: string | null;
   board_results: RunBoardResult[];
 };

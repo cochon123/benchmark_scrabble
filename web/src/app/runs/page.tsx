@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 import { ActiveRunsList } from "@/components/ActiveRunsList";
 import { ModelBadge } from "@/components/ModelBadge";
 import { formatDate, formatPercent } from "@/lib/format";
+import { runManagementEnabled } from "@/lib/deployment";
 import { getLeaderboard } from "@/lib/store";
 import { LeaderboardRow } from "@/lib/types";
 import {
@@ -19,6 +21,9 @@ import {
 export const dynamic = "force-dynamic";
 
 export default function RunsPage() {
+  if (!runManagementEnabled()) {
+    notFound();
+  }
   const runs: LeaderboardRow[] = getLeaderboard();
 
   return (

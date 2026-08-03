@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 
 import { RunDetailBoardCard } from "@/components/RunDetailBoardCard";
 import { ModelBadge } from "@/components/ModelBadge";
-import { formatDate, formatPercent } from "@/lib/format";
+import { formatDate, formatPercent, formatUsd } from "@/lib/format";
 import { getDataset, getRun } from "@/lib/store";
 import { Position, RunDetail } from "@/lib/types";
 import {
@@ -52,7 +52,8 @@ export default async function RunDetailPage({ params }: { params: Promise<{ runI
         </div>
         <p className={mutedClass}>
           Score {formatPercent(run.score_pct)} · {run.raw_points}/{run.optimal_raw_points} points · avg tokens{" "}
-          {run.avg_total_tokens.toFixed(1)}
+          {run.avg_total_tokens.toFixed(1)} · estimated OpenRouter-equivalent cost{" "}
+          {run.total_estimated_cost_usd > 0 ? formatUsd(run.total_estimated_cost_usd) : "unavailable"}
         </p>
       </section>
 

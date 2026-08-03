@@ -1,15 +1,20 @@
 import Link from "next/link";
 
+import { runManagementEnabled } from "@/lib/deployment";
 import { eyebrowClass, navRowClass, secondaryButtonClass, shellHeaderClass, shellTitleClass } from "@/lib/ui";
 
-const links = [
+const publicLinks = [
   { href: "/", label: "Benchmark" },
   { href: "/dataset", label: "Dataset" },
+];
+
+const managementLinks = [
   { href: "/runs", label: "Runs" },
   { href: "/runs/new", label: "New Run" },
 ];
 
 export function Nav() {
+  const links = runManagementEnabled() ? [...publicLinks, ...managementLinks] : publicLinks;
   return (
     <header className={shellHeaderClass}>
       <div>

@@ -1,11 +1,15 @@
 import { NextResponse } from "next/server";
 
+import { runManagementEnabled } from "@/lib/deployment";
 import { runPythonJson } from "@/lib/server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(_: Request, { params }: { params: Promise<{ runId: string }> }) {
+  if (!runManagementEnabled()) {
+    return NextResponse.json({ error: "Not found." }, { status: 404 });
+  }
   const { runId } = await params;
   try {
     const payload = runPythonJson<{ ok: boolean; run_id: string }>(["api", "cancel-run", "--run-id", runId]);

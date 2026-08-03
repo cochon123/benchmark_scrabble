@@ -353,6 +353,7 @@ def _record_position_result(
             "retry_used": board_result["retry_used"],
             "validation_error": board_result["validation_error"],
             "total_tokens": board_result["total_tokens"],
+            "estimated_cost_usd": board_result.get("estimated_cost_usd"),
             "latency_ms": board_result["latency_ms"],
         },
     )
@@ -381,6 +382,8 @@ def _run_position(
     last_response = ""
     last_reasoning = ""
     token_usage = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
+    estimated_costs: list[float] = []
+    cost_details: dict[str, Any] | None = None
     latency_ms = 0
 
     for attempt_index in (1, 2):
@@ -547,6 +550,11 @@ def _run_position(
             "completion_tokens": int(usage.get("completion_tokens", 0) or 0),
             "total_tokens": int(usage.get("total_tokens", 0) or 0),
         }
+        raw_cost = usage.get("cost")
+        if isinstance(raw_cost, (int, float)) and not isinstance(raw_cost, bool):
+            estimated_costs.append(float(raw_cost))
+        if isinstance(usage.get("cost_details"), dict):
+            cost_details = usage["cost_details"]
         latency_ms = int(response.get("latency_ms", 0) or 0)
         last_response = content
         print(
@@ -571,6 +579,7 @@ def _run_position(
                         "raw_response": content,
                         "reasoning": last_reasoning,
                         "reasoning_trace": reasoning_trace,
+                        "usage": usage,
                         "status": "ok",
                     }
                 ],
@@ -579,6 +588,11 @@ def _run_position(
                 "optimal_score": position["optimal_score"],
                 "is_optimal": int(is_optimal),
                 **token_usage,
+                "estimated_cost_usd": sum(estimated_costs) if estimated_costs else None,
+                "cost_details": {
+                    **cost_details,
+                    "attempt_costs": estimated_costs,
+                } if cost_details else None,
                 "latency_ms": latency_ms,
             }
         except Exception as exc:
@@ -589,6 +603,7 @@ def _run_position(
                     "raw_response": content,
                     "reasoning": last_reasoning,
                     "reasoning_trace": reasoning_trace,
+                    "usage": usage,
                     "status": "invalid",
                     "error": final_error,
                 }
@@ -622,5 +637,10 @@ def _run_position(
         "optimal_score": position["optimal_score"],
         "is_optimal": 0,
         **token_usage,
+        "estimated_cost_usd": sum(estimated_costs) if estimated_costs else None,
+        "cost_details": {
+            **cost_details,
+            "attempt_costs": estimated_costs,
+        } if cost_details else None,
         "latency_ms": latency_ms,
     }

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { runManagementEnabled } from "@/lib/deployment";
 import { runPythonJson, spawnBenchmark, spawnCliBenchmark } from "@/lib/server";
 
 export const runtime = "nodejs";
@@ -57,6 +58,9 @@ function startModel(model: string, config: RunConfig) {
 }
 
 export async function POST(request: Request) {
+  if (!runManagementEnabled()) {
+    return NextResponse.json({ error: "Not found." }, { status: 404 });
+  }
   try {
     const body = (await request.json()) as {
       model?: string;

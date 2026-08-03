@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { LeaderboardBars, ScatterChart, TimelineChart, TokenRangeChart } from "@/components/Charts";
+import { runManagementEnabled } from "@/lib/deployment";
 import { formatPercent } from "@/lib/format";
 import { getLeaderboard } from "@/lib/store";
 import { LeaderboardRow } from "@/lib/types";
@@ -34,9 +35,11 @@ export default function BenchmarkPage() {
           The benchmark ignores exchange strategy and leave value on purpose.
         </p>
         <div className="mt-[18px] flex flex-wrap gap-3">
-          <Link href="/runs/new" className={primaryButtonClass}>
-            Launch a run
-          </Link>
+          {runManagementEnabled() ? (
+            <Link href="/runs/new" className={primaryButtonClass}>
+              Launch a run
+            </Link>
+          ) : null}
           <Link href="/dataset" className={secondaryButtonClass}>
             Inspect dataset
           </Link>
