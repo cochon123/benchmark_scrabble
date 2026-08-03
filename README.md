@@ -36,6 +36,11 @@ python3 -m scrabble_bench run --model openai/gpt-4o-mini --preset full
 Other options:
 - `--reasoning-effort minimal|low|medium|high|xhigh` - control reasoning effort
 - `--boards N` - run on N random positions
+- `--concurrency N` - process up to N boards concurrently for API-backed runs
+
+Up to two benchmark runs may be active at once. Set `MAX_ACTIVE_RUNS` in `.env`
+to change that global limit. CLI-backed runs remain sequential within each run,
+while different CLI models can run alongside one another.
 
 ## How It Works
 
