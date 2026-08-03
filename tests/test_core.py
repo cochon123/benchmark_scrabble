@@ -2,8 +2,11 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from unittest.mock import patch
 
+from scrabble_bench import storage
 from scrabble_bench.cli_agents import CLI_TIMEOUT_SECONDS, iter_word_chunks, parse_codex_stream_event
 from scrabble_bench.lexicon import Lexicon
 from scrabble_bench.openrouter import normalize_model_for_benchmark
@@ -204,6 +207,42 @@ class CodexStreamTests(unittest.TestCase):
             '{"type":"turn.completed","last_agent_message":"final answer"}'
         )
         self.assertEqual((text, channel, event_type), ("final answer", "content", "last_agent_message"))
+
+
+class ConcurrentRunStorageTests(unittest.TestCase):
+    def _create_run(self, index: int) -> dict:
+        return storage.create_run(
+            model_id=f"test/model-{index}",
+            model_name=f"Model {index}",
+            company_slug="test",
+            release_date=None,
+            reasoning_effort="medium",
+            mode="smoke",
+            board_count=5,
+        )
+
+    def test_active_run_slots_are_reserved_atomically(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            db_path = Path(temp_dir) / "benchmark.sqlite"
+            with (
+                patch.object(storage, "DB_PATH", db_path),
+                patch.object(storage, "get_max_active_runs", return_value=2),
+            ):
+                with ThreadPoolExecutor(max_workers=6) as executor:
+                    futures = [executor.submit(self._create_run, index) for index in range(6)]
+                successes = [future.result() for future in futures if future.exception() is None]
+                failures = [future.exception() for future in futures if future.exception() is not None]
+
+                self.assertEqual(len(successes), 2)
+                self.assertEqual(len(failures), 4)
+                self.assertTrue(all(isinstance(error, RuntimeError) for error in failures))
+                with storage.connect() as connection:
+                    active_count = connection.execute(
+                        "SELECT COUNT(*) FROM runs WHERE status IN ('queued', 'running')"
+                    ).fetchone()[0]
+                    journal_mode = connection.execute("PRAGMA journal_mode").fetchone()[0]
+                self.assertEqual(active_count, 2)
+                self.assertEqual(journal_mode, "wal")
 
 
 if __name__ == "__main__":

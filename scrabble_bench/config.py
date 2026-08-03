@@ -56,6 +56,18 @@ def get_cli2api_token() -> str | None:
     return os.environ.get("CLI2API_TOKEN") or os.environ.get("OPENROUTER_API_KEY")
 
 
+def get_max_active_runs() -> int:
+    load_env_file()
+    raw_value = os.environ.get("MAX_ACTIVE_RUNS", "2")
+    try:
+        value = int(raw_value)
+    except ValueError as exc:
+        raise RuntimeError("MAX_ACTIVE_RUNS must be a positive integer.") from exc
+    if value < 1:
+        raise RuntimeError("MAX_ACTIVE_RUNS must be a positive integer.")
+    return value
+
+
 VALID_REASONING_EFFORTS = {"none", "minimal", "low", "medium", "high", "xhigh"}
 
 

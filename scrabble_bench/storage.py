@@ -9,7 +9,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Iterator
 
-from .config import DB_PATH, EXPORT_DIR, LOG_DIR, ensure_directories
+from .config import DB_PATH, EXPORT_DIR, LOG_DIR, ensure_directories, get_max_active_runs
 
 
 def utc_now() -> str:
@@ -19,8 +19,9 @@ def utc_now() -> str:
 @contextmanager
 def connect() -> Iterator[sqlite3.Connection]:
     ensure_directories()
-    connection = sqlite3.connect(DB_PATH)
+    connection = sqlite3.connect(DB_PATH, timeout=30)
     connection.row_factory = sqlite3.Row
+    connection.execute("PRAGMA busy_timeout = 30000")
     try:
         yield connection
     finally:
@@ -31,6 +32,9 @@ def init_db() -> None:
     with connect() as connection:
         connection.executescript(
             """
+            PRAGMA journal_mode = WAL;
+            PRAGMA synchronous = NORMAL;
+
             CREATE TABLE IF NOT EXISTS runs (
               id TEXT PRIMARY KEY,
               model_id TEXT NOT NULL,
@@ -99,8 +103,6 @@ def create_run(
     board_count: int,
 ) -> dict[str, Any]:
     init_db()
-    if active_run():
-        raise RuntimeError("Another benchmark run is already active.")
     run_id = uuid.uuid4().hex
     row = {
         "id": run_id,
@@ -115,20 +117,34 @@ def create_run(
         "started_at": utc_now(),
     }
     with connect() as connection:
-        connection.execute(
-            """
-            INSERT INTO runs (
-              id, model_id, model_name, company_slug, release_date, reasoning_effort,
-              mode, board_count, status, started_at
+        try:
+            connection.execute("BEGIN IMMEDIATE")
+            active_count = connection.execute(
+                "SELECT COUNT(*) FROM runs WHERE status IN ('queued', 'running')"
+            ).fetchone()[0]
+            max_active_runs = get_max_active_runs()
+            if active_count >= max_active_runs:
+                raise RuntimeError(
+                    f"The benchmark already has {active_count} active runs "
+                    f"(limit: {max_active_runs}). Wait for one to finish or cancel it."
+                )
+            connection.execute(
+                """
+                INSERT INTO runs (
+                  id, model_id, model_name, company_slug, release_date, reasoning_effort,
+                  mode, board_count, status, started_at
+                )
+                VALUES (
+                  :id, :model_id, :model_name, :company_slug, :release_date, :reasoning_effort,
+                  :mode, :board_count, :status, :started_at
+                )
+                """,
+                row,
             )
-            VALUES (
-              :id, :model_id, :model_name, :company_slug, :release_date, :reasoning_effort,
-              :mode, :board_count, :status, :started_at
-            )
-            """,
-            row,
-        )
-        connection.commit()
+            connection.commit()
+        except Exception:
+            connection.rollback()
+            raise
     return row
 
 

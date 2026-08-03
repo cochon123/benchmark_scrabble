@@ -12,6 +12,7 @@ import {
   panelClass,
   preClass,
   primaryButtonClass,
+  secondaryButtonClass,
   streamCardClass,
   streamGridClass,
   suggestionItemClass,
@@ -27,16 +28,22 @@ type SearchResult = {
   source?: string;
 };
 
+type BatchStartResponse = {
+  runs: Array<{ id: string; model: string }>;
+  errors: Array<{ model: string; error: string }>;
+};
+
 export function NewRunConsole() {
   const [query, setQuery] = useState("openai/gpt-4o-mini");
   const deferredQuery = useDeferredValue(query);
   const [suggestions, setSuggestions] = useState<SearchResult[]>([]);
-  const [selectedModel, setSelectedModel] = useState("openai/gpt-4o-mini");
+  const [selectedModels, setSelectedModels] = useState<string[]>([]);
   const [reasoningEffort, setReasoningEffort] = useState("medium");
   const [preset, setPreset] = useState("smoke");
   const [boards, setBoards] = useState("5");
   const [concurrency, setConcurrency] = useState("4");
   const [runId, setRunId] = useState<string | null>(null);
+  const [launchedRuns, setLaunchedRuns] = useState<Array<{ id: string; model: string }>>([]);
   const [events, setEvents] = useState<RunEvent[]>([]);
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState<string | null>(null);
@@ -140,9 +147,25 @@ export function NewRunConsole() {
     };
   }, [runId]);
 
+  function addModel(model: string) {
+    const normalized = model.trim();
+    if (!normalized) {
+      return;
+    }
+    setSelectedModels((current) => (current.includes(normalized) ? current : [...current, normalized]));
+    setQuery("");
+    setSuggestions([]);
+  }
+
   async function startRun() {
+    const models = selectedModels.length > 0 ? selectedModels : query.trim() ? [query.trim()] : [];
+    if (models.length === 0) {
+      setError("Add at least one model before starting the benchmark.");
+      return;
+    }
     setStatus("starting");
     setRunId(null);
+    setLaunchedRuns([]);
     setEvents([]);
     setError(null);
     setCurrentTarget(null);
@@ -153,7 +176,7 @@ export function NewRunConsole() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: selectedModel,
+        models,
         reasoningEffort,
         preset,
         boards: preset === "custom" ? Number(boards) : undefined,
@@ -168,9 +191,13 @@ export function NewRunConsole() {
       return;
     }
 
-    const payload = await response.json();
-    setRunId(payload.id);
-    setStatus("running");
+    const payload = (await response.json()) as BatchStartResponse;
+    setLaunchedRuns(payload.runs);
+    setRunId(payload.runs.length === 1 ? payload.runs[0].id : null);
+    if (payload.errors.length > 0) {
+      setError(payload.errors.map((item) => `${item.model}: ${item.error}`).join("\n"));
+    }
+    setStatus(payload.runs.length === 1 ? "running" : `running ${payload.runs.length} models`);
   }
 
   return (
@@ -178,21 +205,31 @@ export function NewRunConsole() {
       <div className={panelClass}>
         <h2 className={titleClass}>Launch Benchmark</h2>
         <div className="my-[18px] grid gap-[14px] [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
-          <label className={fieldClass}>
+          <div className={fieldClass}>
             <span>Model</span>
-            <input
-              className={inputClass}
-              value={query}
-              onChange={(event) => {
-                const nextValue = event.target.value;
-                setQuery(nextValue);
-                setSelectedModel(nextValue);
-                if (!nextValue.trim()) {
-                  setSuggestions([]);
-                }
-              }}
-              placeholder="openai/gpt-4o-mini or cli/codex/gpt-5.6-terra"
-            />
+            <div className="flex gap-2">
+              <input
+                className={inputClass}
+                value={query}
+                onChange={(event) => {
+                  const nextValue = event.target.value;
+                  setQuery(nextValue);
+                  if (!nextValue.trim()) {
+                    setSuggestions([]);
+                  }
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault();
+                    addModel(query);
+                  }
+                }}
+                placeholder="openai/gpt-4o-mini or cli/codex/gpt-5.6-terra"
+              />
+              <button type="button" className={`${secondaryButtonClass} shrink-0`} onClick={() => addModel(query)}>
+                Add
+              </button>
+            </div>
             {!!suggestions.length && (
               <div className={suggestionListClass}>
                 {suggestions.slice(0, 10).map((item) => (
@@ -201,9 +238,7 @@ export function NewRunConsole() {
                     type="button"
                     className={suggestionItemClass}
                     onClick={() => {
-                      setQuery(item.slug);
-                      setSelectedModel(item.slug);
-                      setSuggestions([]);
+                      addModel(item.slug);
                     }}
                   >
                     <strong>
@@ -219,7 +254,22 @@ export function NewRunConsole() {
                 ))}
               </div>
             )}
-          </label>
+            {selectedModels.length > 0 ? (
+              <div className="flex flex-wrap gap-2 pt-1">
+                {selectedModels.map((model) => (
+                  <button
+                    key={model}
+                    type="button"
+                    className="rounded-full border border-[color:var(--border)] bg-[color:var(--surface-soft)] px-3 py-1.5 text-left text-[0.78rem] font-semibold"
+                    title="Remove model"
+                    onClick={() => setSelectedModels((current) => current.filter((item) => item !== model))}
+                  >
+                    {model} ×
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
 
           <label className={fieldClass}>
             <span>Reasoning</span>
@@ -276,13 +326,22 @@ export function NewRunConsole() {
             />
           </label>
         </div>
-        <button type="button" className={primaryButtonClass} onClick={() => void startRun()}>
-          Start Run
+        <button type="button" className={primaryButtonClass} onClick={() => void startRun()} disabled={status === "starting"}>
+          Start {selectedModels.length > 1 ? `${selectedModels.length} Runs` : "Run"}
         </button>
         <p className={`${mutedClass} mt-3`}>
           Status: <strong>{status}</strong> {runId ? `· run ${runId}` : ""}
         </p>
         {error ? <p className="mt-2.5 font-bold text-[#a02222]">{error}</p> : null}
+        {launchedRuns.length > 0 ? (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {launchedRuns.map((run) => (
+              <a key={run.id} href={`/runs/live/${run.id}`} className={secondaryButtonClass}>
+                Watch {run.model}
+              </a>
+            ))}
+          </div>
+        ) : null}
       </div>
 
       <div className={panelClass}>
@@ -290,7 +349,9 @@ export function NewRunConsole() {
         <div className={`${streamGridClass} mt-4`}>
           <div className={streamCardClass}>
             <strong>Current response</strong>
-            <p className={mutedClass}>{currentTarget ?? "Waiting for model output."}</p>
+            <p className={mutedClass}>
+              {runId ? currentTarget ?? "Waiting for model output." : launchedRuns.length > 1 ? "Open a run above to watch its stream." : "Waiting for model output."}
+            </p>
             <AutoScrollPre className={preClass}>
               {streamedContent || "No content streamed yet."}
             </AutoScrollPre>
