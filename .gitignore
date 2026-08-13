@@ -9,3 +9,6 @@ data/exports/
 data/quackle/build/
 web/.next/
 web/node_modules/
+artifacts/
+data/training/
+*.egg-info/

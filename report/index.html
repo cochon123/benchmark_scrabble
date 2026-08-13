@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="A chronological memory of the Scrabble AI experiments through V12, including the off-target hybrid diagnostic and the unchanged 50% unaided-generation goal.">
+  <title>Scrabble AI — Experiment Memory</title>
+  <style>
+    :root {
+      --paper:#f5f3ed; --surface:#fffefa; --ink:#18201d; --muted:#66706b;
+      --line:#d9ddd6; --soft:#eceee9; --green:#1d6b50; --green-soft:#e2f0e9;
+      --amber:#986512; --amber-soft:#f6ead1; --red:#a3443f; --red-soft:#f6e4e1;
+      --blue:#355f8b; --blue-soft:#e6eef7; --tile:#eee3c8; --shadow:0 12px 34px #2431290b;
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; overflow-x:hidden; background:var(--paper); color:var(--ink); font:16px/1.62 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--green); text-underline-offset:3px; }
+    strong { color:var(--ink); }
+    code { padding:.12rem .32rem; border:1px solid var(--line); border-radius:.35rem; background:var(--soft); font-size:.88em; }
+    #reading-progress { position:fixed; z-index:20; inset:0 auto auto 0; width:0; height:3px; background:linear-gradient(90deg,var(--amber),var(--green)); }
+    .wrap { width:min(1060px,calc(100% - 32px)); margin:auto; }
+    .hero { padding:clamp(48px,9vw,112px) 0 44px; border-bottom:1px solid var(--line); }
+    .hero-grid { display:grid; grid-template-columns:minmax(0,1.45fr) minmax(260px,.65fr); gap:clamp(28px,6vw,72px); align-items:end; }
+    .kicker,.label { color:var(--muted); font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
+    h1 { max-width:760px; margin:12px 0 20px; font-size:clamp(3rem,8.8vw,7.1rem); line-height:.91; letter-spacing:-.065em; }
+    .lede { max-width:720px; margin:0; color:var(--muted); font-size:clamp(1.02rem,2vw,1.26rem); }
+    .goal { padding:24px; border:1px solid var(--line); border-radius:18px; background:var(--surface); box-shadow:var(--shadow); }
+    .goal-number { display:flex; align-items:baseline; gap:8px; margin-top:8px; }
+    .goal-number b { font-size:clamp(3.6rem,8vw,5.6rem); line-height:1; letter-spacing:-.06em; }
+    .goal-number span { color:var(--muted); font-weight:700; }
+    .goal-track { position:relative; height:12px; margin:21px 0 12px; overflow:visible; border-radius:99px; background:var(--soft); }
+    .goal-track::after { content:""; position:absolute; top:-5px; right:0; width:2px; height:22px; background:var(--ink); }
+    .goal-fill { width:50.5%; height:100%; border-radius:inherit; background:linear-gradient(90deg,var(--amber),var(--green)); }
+    .goal-note { margin:0; color:var(--muted); font-size:.82rem; }
+    .goal-note strong { color:var(--amber); }
+    .nav { position:sticky; z-index:10; top:3px; border-bottom:1px solid var(--line); background:#f5f3edf0; backdrop-filter:blur(12px); }
+    .nav .wrap { display:flex; gap:18px; overflow:auto; padding:12px 0; scrollbar-width:none; }
+    .nav a { flex:0 0 auto; color:var(--muted); font-size:.82rem; font-weight:750; text-decoration:none; }
+    .nav a:hover { color:var(--ink); }
+    main { padding:42px 0 90px; }
+    section { scroll-margin-top:72px; }
+    .section-head { display:grid; grid-template-columns:220px 1fr; gap:28px; align-items:start; margin:66px 0 26px; }
+    .section-head:first-child { margin-top:0; }
+    h2 { max-width:720px; margin:0; font-size:clamp(2rem,5vw,4rem); line-height:1.02; letter-spacing:-.05em; }
+    h3 { margin:0 0 8px; font-size:clamp(1.22rem,2vw,1.55rem); line-height:1.2; letter-spacing:-.025em; }
+    p { margin:10px 0; }
+    .muted { color:var(--muted); }
+    .metric-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+    .metric { min-height:160px; padding:19px; border:1px solid var(--line); border-radius:16px; background:var(--surface); box-shadow:var(--shadow); }
+    .metric b { display:block; margin:15px 0 2px; font-size:clamp(2rem,4vw,3.3rem); line-height:1; letter-spacing:-.05em; }
+    .metric small { display:block; color:var(--muted); line-height:1.35; }
+    .metric.good { border-color:#98bba9; }
+    .metric.warn { border-color:#d8bd87; }
+    .metric.bad { border-color:#d9aaa5; }
+    .accuracy-map { display:grid; grid-template-columns:repeat(4,1fr); gap:0; margin-top:20px; overflow:hidden; border:1px solid var(--line); border-radius:16px; background:var(--surface); }
+    .accuracy-map div { min-height:135px; padding:18px; border-left:1px solid var(--line); }
+    .accuracy-map div:first-child { border:0; }
+    .accuracy-map b { display:block; margin:8px 0 5px; font-size:1.45rem; }
+    .accuracy-map small { color:var(--muted); }
+    .callout { margin-top:18px; padding:18px 20px; border-left:3px solid var(--amber); background:var(--amber-soft); color:#5d481f; }
+    .timeline { position:relative; margin-top:26px; }
+    .timeline::before { content:""; position:absolute; top:0; bottom:0; left:31px; width:1px; background:var(--line); }
+    .event { position:relative; display:grid; grid-template-columns:64px minmax(0,1fr); gap:22px; margin-bottom:20px; }
+    .tile { position:sticky; top:74px; z-index:2; display:grid; place-items:center; width:62px; height:62px; border:1px solid #cbbb98; border-radius:10px; background:var(--tile); box-shadow:inset -3px -3px 0 #d8c9a6; font-size:.83rem; font-weight:900; letter-spacing:-.03em; }
+    .tile sup { position:absolute; right:6px; bottom:3px; color:#6f634d; font-size:.55rem; }
+    .event-card { padding:clamp(20px,4vw,34px); border:1px solid var(--line); border-radius:18px; background:var(--surface); box-shadow:var(--shadow); }
+    .event-card[data-tone="good"] { border-left:4px solid var(--green); }
+    .event-card[data-tone="warn"] { border-left:4px solid var(--amber); }
+    .event-card[data-tone="bad"] { border-left:4px solid var(--red); }
+    .version { display:flex; flex-wrap:wrap; gap:8px 12px; align-items:center; margin-bottom:8px; }
+    .version span { color:var(--muted); font-size:.78rem; }
+    .pill { display:inline-flex; padding:3px 8px; border-radius:99px; background:var(--soft); color:var(--muted); font-size:.68rem!important; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    .pill.good { background:var(--green-soft); color:var(--green); }
+    .pill.bad { background:var(--red-soft); color:var(--red); }
+    .pill.warn { background:var(--amber-soft); color:var(--amber); }
+    .evidence { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin:18px 0; }
+    .evidence div { padding:13px 14px; border:1px solid var(--line); border-radius:11px; background:#faf9f5; }
+    .evidence b { display:block; font-size:1.12rem; }
+    .evidence small { color:var(--muted); }
+    .lesson { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:18px; }
+    .lesson > div { padding:15px 17px; border-radius:12px; }
+    .learned { background:var(--green-soft); color:#244f3e; }
+    .avoid { background:var(--red-soft); color:#68312e; }
+    .lesson strong { display:block; margin-bottom:4px; }
+    .microbars { display:grid; gap:9px; margin:18px 0; }
+    .microbar { display:grid; grid-template-columns:155px 1fr 68px; gap:10px; align-items:center; font-size:.8rem; }
+    .track { height:9px; overflow:hidden; border-radius:99px; background:var(--soft); }
+    .fill { height:100%; border-radius:inherit; background:var(--green); }
+    .fill.amber { background:var(--amber); }
+    .fill.red { background:var(--red); }
+    .plot { width:100%; height:auto; margin:18px 0 4px; border:1px solid var(--line); border-radius:14px; background:#faf9f5; }
+    .cliff { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; align-items:end; min-height:230px; margin:22px 0 8px; padding:18px; border:1px solid var(--line); border-radius:16px; background:var(--surface); }
+    .cliff-item { display:flex; flex-direction:column; justify-content:end; gap:8px; height:100%; text-align:center; color:var(--muted); font-size:.75rem; }
+    .cliff-item i { display:grid; place-items:center; min-height:5px; border-radius:8px 8px 3px 3px; background:var(--green); color:white; font-style:normal; font-weight:850; }
+    .cliff-item:nth-child(n+3) i { background:var(--red); }
+    .funnel { display:grid; gap:10px; max-width:760px; margin:22px auto; }
+    .funnel div { width:var(--w); margin:auto; padding:11px 16px; border:1px solid var(--line); border-radius:10px; background:var(--surface); text-align:center; font-size:.86rem; }
+    .funnel div:last-child { border-color:#a4bda9; background:var(--green-soft); }
+    .matrix { width:100%; border-collapse:collapse; margin-top:18px; font-size:.86rem; }
+    .matrix th,.matrix td { padding:12px 10px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    .matrix th { color:var(--muted); font-size:.7rem; letter-spacing:.09em; text-transform:uppercase; }
+    .yes { color:var(--green); font-weight:800; }
+    .no { color:var(--red); font-weight:800; }
+    .maybe { color:var(--amber); font-weight:800; }
+    .rule-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; counter-reset:rules; }
+    .rule { position:relative; min-height:145px; padding:20px 20px 20px 58px; border:1px solid var(--line); border-radius:15px; background:var(--surface); }
+    .rule::before { counter-increment:rules; content:counter(rules); position:absolute; left:18px; top:18px; display:grid; place-items:center; width:27px; height:27px; border-radius:7px; background:var(--tile); font-weight:900; }
+    .rule p { margin:5px 0 0; color:var(--muted); }
+    .next { display:grid; grid-template-columns:1.1fr .9fr; gap:18px; padding:clamp(22px,5vw,42px); border:1px solid #9fb9aa; border-radius:20px; background:var(--green-soft); }
+    .gate-list { margin:0; padding:0; list-style:none; }
+    .gate-list li { display:flex; gap:10px; padding:9px 0; border-bottom:1px solid #b9d3c5; }
+    .gate-list li:last-child { border:0; }
+    .gate-list b { min-width:72px; }
+    details { margin-top:14px; border-top:1px solid var(--line); }
+    summary { padding:14px 0; cursor:pointer; color:var(--muted); font-weight:750; }
+    .links { display:flex; flex-wrap:wrap; gap:8px; }
+    .links a { padding:8px 11px; border:1px solid var(--line); border-radius:9px; background:var(--surface); font-size:.8rem; font-weight:700; text-decoration:none; }
+    footer { padding:28px 0 55px; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; }
+    @media (prefers-color-scheme:dark) {
+      :root { --paper:#111512; --surface:#171c18; --ink:#edf2ed; --muted:#a5afa8; --line:#303832; --soft:#242b26; --green:#73c8a2; --green-soft:#1b3629; --amber:#e2b765; --amber-soft:#382f1d; --red:#e28b84; --red-soft:#3b2422; --blue:#8bb5e0; --blue-soft:#1d2d3d; --tile:#50462f; --shadow:none; }
+      .nav { background:#111512ec; } .goal-note strong { color:var(--amber); } .evidence div,.plot { background:#141814; }
+      .learned { color:#bce8d3; } .avoid { color:#f0beb9; } .callout { color:#ead6aa; }
+      .tile { border-color:#75694e; box-shadow:inset -3px -3px 0 #3d3524; }
+    }
+    @media (max-width:820px) {
+      .hero-grid,.section-head,.next { grid-template-columns:1fr; }
+      .metric-grid,.accuracy-map { grid-template-columns:1fr 1fr; }
+      .accuracy-map div:nth-child(3) { border-left:0; border-top:1px solid var(--line); }
+      .accuracy-map div:nth-child(4) { border-top:1px solid var(--line); }
+      .section-head { gap:8px; }
+    }
+    @media (max-width:620px) {
+      .wrap { width:min(100% - 20px,1060px); }
+      .metric-grid,.lesson,.rule-grid { grid-template-columns:1fr; }
+      .event { grid-template-columns:48px minmax(0,1fr); gap:10px; }
+      .timeline::before { left:23px; }
+      .tile { width:47px; height:47px; border-radius:8px; font-size:.69rem; }
+      .evidence { grid-template-columns:1fr; }
+      .microbar { grid-template-columns:105px 1fr 56px; }
+      .cliff { grid-template-columns:1fr; align-items:stretch; min-height:0; }
+      .cliff-item { display:grid; grid-template-columns:115px 1fr 45px; align-items:center; text-align:left; }
+      .cliff-item i { min-height:28px; width:var(--mobile-w); }
+      .matrix { display:block; overflow-x:auto; font-size:.75rem; }
+      .matrix th,.matrix td { padding:9px 6px; }
+    }
+    @media (max-width:430px) {
+      .accuracy-map { grid-template-columns:1fr; }
+      .accuracy-map div { border-left:0; border-top:1px solid var(--line); }
+      .accuracy-map div:first-child { border-top:0; }
+      h1 { font-size:3.25rem; }
+    }
+    @media print { .nav,#reading-progress { display:none; } body { background:white; } .tile { position:static; } .event-card,.metric { break-inside:avoid; box-shadow:none; } }
+  </style>
+</head>
+<body>
+  <div id="reading-progress" aria-hidden="true"></div>
+  <header class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="kicker">Project memory · updated August 13, 2026</div>
+        <h1>The road to a 50% Scrabble player.</h1>
+        <p class="lede">A chronological record of what we trained, what actually generalized, what fooled us, and the rules that should govern every experiment from here.</p>
+      </div>
+      <aside class="goal" aria-label="Project north-star goal">
+        <div class="label">North star</div>
+        <div class="goal-number"><b>50%</b><span>exact-optimal accuracy</span></div>
+        <div class="goal-track" title="Latest clean unaided exact-optimal signal: 0.45%"><div class="goal-fill" style="width:.9%"></div></div>
+        <p class="goal-note"><strong>Not cleared.</strong> The target is unaided board+rack → move generation. V12's 74% used symbolic enumeration of the complete legal move space and does not count toward this goal.</p>
+      </aside>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Report sections"><div class="wrap">
+    <a href="#scoreboard">Scoreboard</a><a href="#timeline">Chronology</a><a href="#patterns">Patterns</a><a href="#rules">Rules</a><a href="#next">Next experiment</a><a href="#evidence">Evidence</a>
+  </div></nav>
+
+  <main class="wrap">
+    <section id="scoreboard">
+      <div class="section-head"><div class="label">Where we really are</div><div><h2>Progress exists. The units matter.</h2><p class="muted">These numbers answer different questions. Keeping them separate prevents another smoke-test “victory” from being mistaken for general Scrabble ability.</p></div></div>
+      <div class="metric-grid">
+        <article class="metric bad"><span class="label">Contaminated smoke</span><b>100%</b><small>Memorized five public boards. Proof that 4B capacity is sufficient to memorize—not to generalize.</small></article>
+        <article class="metric"><span class="label">Clean free-play signal</span><b>2 / 440</b><small>V2 exact optimal moves on held-out boards with up to two attempts: 0.45%.</small></article>
+        <article class="metric good"><span class="label">Supplied-plan ranking</span><b>46%</b><small>V4 diagnostic: choose the best among provided legal candidates. A real but scaffolded skill.</small></article>
+        <article class="metric bad"><span class="label">Off-target hybrid</span><b>74%</b><small>V12 ranked a complete solver-enumerated legal space. Useful diagnostic, but not a test of unaided move generation.</small></article>
+      </div>
+      <div class="accuracy-map" aria-label="Four different meanings of accuracy">
+        <div><span class="label">Free play</span><b>Board + rack → move</b><small>The benchmark goal. Must be legal and exactly optimal without hidden candidates.</small></div>
+        <div><span class="label">Pass@k</span><b>Any success in k tries</b><small>Useful for exploration, but never comparable to single-answer accuracy.</small></div>
+        <div><span class="label">Candidate ranking</span><b>Choose from a list</b><small>Measures judgment after search has already reduced the problem.</small></div>
+        <div><span class="label">Slot recall</span><b>Find geometry only</b><small>Does not choose a word or prove that the eventual move is legal.</small></div>
+      </div>
+      <div class="callout"><strong>Permanent metric rule:</strong> “50% accuracy” means 50% exact-optimal, legal, single-answer moves on whole-game-held-out boards. Every proxy must keep its own name.</div>
+    </section>
+
+    <section id="timeline">
+      <div class="section-head"><div class="label">Chronology</div><div><h2>Scroll forward through the experiments.</h2><p class="muted">Green means a reusable capability. Amber means a useful partial result. Red means the approach failed its behavioral gate.</p></div></div>
+      <div class="timeline">
+        <article class="event">
+          <div class="tile">S0<sup>×</sup></div>
+          <div class="event-card" data-tone="bad">
+            <div class="version"><span class="pill bad">Contaminated</span><span>First smoke specialization</span></div>
+            <h3>We reached 100%—and proved memorization.</h3>
+            <p>The clean adapter scored 0/158, broad benchmark specialization reached 40/158, and focused specialization reached 158/158 after the five public smoke positions entered training. The rising curve looked like learning but measured increasing exposure to the test.</p>
+            <div class="evidence"><div><b>5 boards</b><small>public smoke set</small></div><div><b>100%</b><small>exact optimal</small></div><div><b>invalid evidence</b><small>for generalization</small></div></div>
+            <div class="lesson"><div class="learned"><strong>Kept</strong>A 4B model can memorize board-specific solutions and emit the required tool format.</div><div class="avoid"><strong>Never repeat</strong>Train on any board later used to claim general ability—even as a “small specialization.”</div></div>
+          </div>
+        </article>
+
+        <article class="event">
+          <div class="tile">V2<sup>2</sup></div>
+          <div class="event-card" data-tone="good">
+            <div class="version"><span class="pill good">First clean signal</span><span>Thinking 4B · 3,366 unique positions</span></div>
+            <h3>The model stopped being random.</h3>
+            <p>V2 produced legal moves on unseen games, found two exact optima, and repaired seven rejected answers after verifier feedback. Output parsing reached 100%.</p>
+            <div class="evidence"><div><b>11 / 440</b><small>legal held-out moves</small></div><div><b>2 / 440</b><small>exact optimal</small></div><div><b>7</b><small>successful recoveries</small></div></div>
+            <div class="lesson"><div class="learned"><strong>Kept</strong>Strict verifier feedback can produce genuine recovery; one celebrated 40/40 move corrected disconnection.</div><div class="avoid"><strong>Limitation</strong>2.5% legality and inaccurate score claims meant the model had behavior, not competence.</div></div>
+          </div>
+        </article>
+
+        <article class="event">
+          <div class="tile">V3<sup>3</sup></div>
+          <div class="event-card" data-tone="bad">
+            <div class="version"><span class="pill bad">Scale failed</span><span>21,874 records · 2,735 steps</span></div>
+            <h3>A much lower loss did not make a better player.</h3>
+            <p>We enlarged the corpus, added dense coordinates and hard negatives, and drove weighted loss down by 95.7%. On the matched 20-board test, V3 and V2 each produced only one legal opening move; every non-empty board failed.</p>
+            <svg class="plot" viewBox="0 0 760 220" role="img" aria-label="V3 loss falls strongly while legal board count remains one out of twenty">
+              <g stroke="currentColor" opacity=".12"><path d="M55 35H725M55 105H725M55 175H725"/></g>
+              <polyline points="65,30 150,111 235,144 320,155 405,164 490,168 575,169 705,170" fill="none" stroke="#1d6b50" stroke-width="5"/>
+              <line x1="65" y1="194" x2="705" y2="194" stroke="#a3443f" stroke-width="5"/>
+              <g fill="currentColor" font-size="12"><text x="65" y="20">loss 13.98</text><text x="650" y="158">0.60</text><text x="65" y="214">legality stays 1 / 20</text></g>
+            </svg>
+            <div class="lesson"><div class="learned"><strong>Kept</strong>Dense versus sparse serialization scored identically; representation text format was not the main bottleneck.</div><div class="avoid"><strong>Never repeat</strong>Do not use falling teacher-forced loss as evidence that free board search improved.</div></div>
+          </div>
+        </article>
+
+        <article class="event">
+          <div class="tile">V4<sup>4</sup></div>
+          <div class="event-card" data-tone="warn">
+            <div class="version"><span class="pill warn">Capability split</span><span>Fresh non-thinking 4B · 4,000 positions</span></div>
+            <h3>It learned to judge moves it could not discover.</h3>
+            <p>Short SFT made responses concise and parseable but yielded 0/100 legal free moves. A clean decomposition then revealed strong candidate judgment: 46% optimal ranking and 79.1% verified candidate score ratio.</p>
+            <div class="evidence"><div><b>0 / 100</b><small>legal free moves</small></div><div><b>46%</b><small>best supplied candidate</small></div><div><b>88%</b><small>picked a legal candidate</small></div></div>
+            <div class="microbars"><div class="microbar"><span>Loss</span><div class="track"><div class="fill" style="width:82%"></div></div><b>4.41→.78</b></div><div class="microbar"><span>Free legality</span><div class="track"><div class="fill red" style="width:1%"></div></div><b>0→0%</b></div><div class="microbar"><span>Candidate rank</span><div class="track"><div class="fill" style="width:46%"></div></div><b>46%</b></div></div>
+            <div class="lesson"><div class="learned"><strong>Kept</strong>The model has value/judgment signal after a search procedure supplies candidates.</div><div class="avoid"><strong>Never repeat</strong>Do not launch RL when rollout groups are almost entirely illegal; the reward has no useful contrast.</div></div>
+          </div>
+        </article>
+
+        <article class="event">
+          <div class="tile">4.1<sup>1</sup></div>
+          <div class="event-card" data-tone="good">
+            <div class="version"><span class="pill good">Scaffold success</span><span>Staged curriculum</span></div>
+            <h3>The exact start square is the capability cliff.</h3>
+            <p>Complete-plan copy and ranking became reliable. Removing exact coordinates caused performance to collapse immediately, even when the word, direction, or anchor remained available.</p>
+            <div class="cliff" aria-label="Capability cliff as positional scaffolds are removed">
+              <div class="cliff-item"><span>Plan copy</span><i style="height:90%;--mobile-w:90%">90% legal</i><b>90</b></div>
+              <div class="cliff-item"><span>Plan rank</span><i style="height:98%;--mobile-w:98%">98% legal</i><b>98</b></div>
+              <div class="cliff-item"><span>Word + dir</span><i style="height:2%;--mobile-w:2%"></i><b>0</b></div>
+              <div class="cliff-item"><span>Anchor + dir</span><i style="height:4%;--mobile-w:4%"></i><b>2</b></div>
+              <div class="cliff-item"><span>Free move</span><i style="height:2%;--mobile-w:2%"></i><b>0</b></div>
+            </div>
+            <div class="lesson"><div class="learned"><strong>Kept</strong>Stage 2 is a strong hybrid artifact: it ranks complete plans at 44% optimal with 98% legality.</div><div class="avoid"><strong>Never repeat</strong>Do not assume scaffolded competence will transfer when the search scaffold is removed.</div></div>
+          </div>
+        </article>
+
+        <article class="event">
+          <div class="tile">4.2<sup>2</sup></div>
+          <div class="event-card" data-tone="warn">
+            <div class="version"><span class="pill warn">Localization probe</span><span>500 steps · anchor and cross-check supervision</span></div>
+            <h3>Choosing coordinates is easy; generating them is not.</h3>
+            <p>When offered 16 shuffled start squares, accuracy jumped from 8% to 87%. Asked to emit the same start coordinate without choices, accuracy improved only from 4% to 12%.</p>
+            <div class="evidence"><div><b>87%</b><small>candidate start choice</small></div><div><b>12%</b><small>direct start coordinate</small></div><div><b>5%</b><small>optimal pass@32</small></div></div>
+            <div class="lesson"><div class="learned"><strong>Kept</strong>Free sampling was sparse but real: 6/20 boards had a legal move at pass@32, one exactly optimal.</div><div class="avoid"><strong>Never repeat</strong>Candidate-choice accuracy must never be reported as free localization accuracy.</div></div>
+          </div>
+        </article>
+
+        <article class="event">
+          <div class="tile">4.3<sup>3</sup></div>
+          <div class="event-card" data-tone="warn">
+            <div class="version"><span class="pill warn">Recovery SFT</span><span>On-policy hard negatives</span></div>
+            <h3>Recovery changed the success set instead of accumulating skill.</h3>
+            <p>V4.3 found legal moves on different boards than V4.2, but the overlap between their pass@16 success sets was zero. Earlier success was not retained; the new checkpoint was complementary, not generally better.</p>
+            <div class="lesson"><div class="learned"><strong>Kept</strong>Diverse checkpoints can add coverage when used as an ensemble or sampler.</div><div class="avoid"><strong>Never repeat</strong>Do not call a model better because aggregate coverage rises while paired-board capability is forgotten.</div></div>
+          </div>
+        </article>
+
+        <article class="event">
+          <div class="tile">V5<sup>5</sup></div>
+          <div class="event-card" data-tone="bad">
+            <div class="version"><span class="pill bad">Capacity test failed</span><span>Qwen3 8B</span></div>
+            <h3>A bigger model did not remove the bottleneck.</h3>
+            <p>The 8B capacity pilot passed zero of six promotion gates. Added capacity helped recognition when choices or plans were supplied, but exact spatial generation barely moved and none of 320 diverse free answers was legal.</p>
+            <div class="evidence"><div><b>0 / 6</b><small>promotion gates</small></div><div><b>0 / 320</b><small>legal free answers</small></div><div><b>153</b><small>collisions</small></div></div>
+            <div class="lesson"><div class="learned"><strong>Kept</strong>Capacity is useful for recognition and execution under scaffolding.</div><div class="avoid"><strong>Never repeat</strong>Do not pay for a larger LLM until a small model shows the target behavior scales with data or search.</div></div>
+          </div>
+        </article>
+
+        <article class="event">
+          <div class="tile">V6<sup>6</sup></div>
+          <div class="event-card" data-tone="bad">
+            <div class="version"><span class="pill bad">Structured SFT failed</span><span>6,705 positions · three fresh controls</span></div>
+            <h3>Changing the corpus objective caused task interference.</h3>
+            <p>Direct imitation, action-value supervision, and compact search traces all reduced loss. Neither finalist passed a hard gate. Continuing V4.2 improved direct coordinates from 12% to 16% while damaging candidate choice, legality, score, and plan copying.</p>
+            <div class="evidence"><div><b>12→16%</b><small>exact start coordinate</small></div><div><b>15→5%</b><small>legal pass@16</small></div><div><b>0 / 6</b><small>hard gates passed</small></div></div>
+            <div class="lesson"><div class="learned"><strong>Kept</strong>Multiple frozen behavioral gates expose tradeoffs that a single headline score hides.</div><div class="avoid"><strong>Never repeat</strong>Do not mix new objectives without rehearsal and paired regression tests for retained skills.</div></div>
+          </div>
+        </article>
+
+        <article class="event">
+          <div class="tile">V7<sup>7</sup></div>
+          <div class="event-card" data-tone="bad">
+            <div class="version"><span class="pill bad">Factorization failed</span><span>Fixed row / column / direction / word language</span></div>
+            <h3>Cleaner tokens did not make the skills compose.</h3>
+            <p>V7 removed coordinate formatting ambiguity and trained individual factors plus on-policy corrections. Row and direction tasks moved, but full location stayed at 3.33% and free-plan legality stayed at 0%.</p>
+            <div class="evidence"><div><b>13.33%</b><small>row task after Stage B</small></div><div><b>3.33%</b><small>full location</small></div><div><b>1 / 320</b><small>legal sampled moves</small></div></div>
+            <div class="callout"><strong>Measurement incident:</strong> “first error” checked row before column, direction, and word, so globally wrong answers were always labeled as row failures. We trained against an attribution artifact.</div>
+            <div class="lesson"><div class="learned"><strong>Kept</strong>Independent factor exactness and all tied optima are required for diagnosis.</div><div class="avoid"><strong>Never repeat</strong>Never infer a bottleneck from an order-dependent first-error taxonomy.</div></div>
+          </div>
+        </article>
+
+        <article class="event">
+          <div class="tile">V8<sup>8</sup></div>
+          <div class="event-card" data-tone="warn">
+            <div class="version"><span class="pill warn">Causal audit</span><span>Quackle-certified · full legal space</span></div>
+            <h3>The failure is coupled, not one bad coordinate.</h3>
+            <p>Correcting row, column, or even direction did not make the remaining word adapt. Supplying a complete correct plan did: V4.2 then executed legal moves 78.26% of the time and optimal moves 69.57% of the time.</p>
+            <div class="evidence"><div><b>12.50%</b><small>legal with correct location + direction</small></div><div><b>69.57%</b><small>optimal with complete plan</small></div><div><b>100 / 100</b><small>Quackle score agreement</small></div></div>
+            <p>A six-model frozen ranker over 117,465 legal plans reached only 6.67% exact top-1 and 47.98% point ratio. Length normalization improved top-1 to 13%, but a trivial face-value heuristic reached 16.48%.</p>
+            <p>A parallel 4.2M-parameter board-native decoder told the same story: canonical and set-valued losses fell, while pass@32 legality stayed near 5%. A lexicon trie guaranteed dictionary prefixes but reduced legal pass@32, because valid words can still collide, disconnect, or violate cross-words.</p>
+            <div class="lesson"><div class="learned"><strong>Kept</strong>Complete-plan execution is strong. Word, geometry, rack use, crosses, and score must be solved jointly.</div><div class="avoid"><strong>Never repeat</strong>A learned ranker must beat trivial heuristics before receiving more training budget.</div></div>
+          </div>
+        </article>
+
+        <article class="event">
+          <div class="tile">V9<sup>9</sup></div>
+          <div class="event-card" data-tone="warn">
+            <div class="version"><span class="pill warn">Spatial model</span><span>684k parameters · three seeds · 305 unseen games</span></div>
+            <h3>Geometry became learnable, but unconstrained search still leaked probability.</h3>
+            <p>The first slot-first ensemble reached only 33.77% recall@32. Training the spatial head end-to-end produced a clean learning curve, then a three-seed mean of 46.67% recall@32. Ensembling raised it to 51.80%.</p>
+            <div class="microbars"><div class="microbar"><span>1k positions</span><div class="track"><div class="fill amber" style="width:24.92%"></div></div><b>24.92</b></div><div class="microbar"><span>2.5k</span><div class="track"><div class="fill amber" style="width:34.75%"></div></div><b>34.75</b></div><div class="microbar"><span>5.5k</span><div class="track"><div class="fill" style="width:48.85%"></div></div><b>48.85</b></div><div class="microbar"><span>3-seed ensemble</span><div class="track"><div class="fill" style="width:51.8%"></div></div><b>51.80</b></div></div>
+            <div class="funnel" aria-label="V9 search-space funnel">
+              <div style="--w:100%">Board + rack → 450 unconstrained start/direction slots</div>
+              <div style="--w:82%">Ensemble top-32 → 51.80% optimal-slot recall</div>
+              <div style="--w:64%">Oracle union of three top-32 lists → 60.98%</div>
+              <div style="--w:46%">Teacher 16-move shortlist → 25.25% optimal top-1</div>
+            </div>
+            <p>Doubling training to 2,400 steps reduced test recall@32 to 44.26%, so more optimization overfit. The teacher shortlist reached 94.10% recall@8, but its 100% optimal coverage was guaranteed by construction and is not yet a true legal-generator benchmark.</p>
+            <div class="lesson"><div class="learned"><strong>Kept</strong>The spatial signal is real, reproducible, and partly complementary across seeds. Constrained ranking is promising.</div><div class="avoid"><strong>Never repeat</strong>Do not scale the 450-way unconstrained objective or promote a teacher shortlist result as free-play accuracy.</div></div>
+          </div>
+        </article>
+
+        <article class="event">
+          <div class="tile">V10<sup>10</sup></div>
+          <div class="event-card" data-tone="bad">
+            <div class="version"><span class="pill bad">Distillation failed</span><span>Thinking 4B · 150 free-T4 steps</span></div>
+            <h3>Shorter reasoning did not become executable search.</h3>
+            <p>Compact visible search traces reduced median completions from 512 to roughly 200 tokens, but the base model and checkpoints 50, 100, and 150 all remained at 0/5 legal moves on the same frozen boards. A serialization correction and duplicate-placement cleanup recovered nothing.</p>
+            <div class="evidence"><div><b>0 / 5</b><small>legal at every checkpoint</small></div><div><b>512→224</b><small>median output tokens</small></div><div><b>$0</b><small>paid compute</small></div></div>
+            <div class="lesson"><div class="learned"><strong>Kept</strong>Free-compute behavioral gates can cheaply reject a plausible distillation story.</div><div class="avoid"><strong>Never repeat</strong>Do not treat concise reasoning or correct trace syntax as evidence of legal board search.</div></div>
+          </div>
+        </article>
+
+        <article class="event">
+          <div class="tile">V11<sup>11</sup></div>
+          <div class="event-card" data-tone="warn">
+            <div class="version"><span class="pill warn">Pointer signal, cross failure</span><span>Atomic square glyphs · staged legality curriculum</span></div>
+            <h3>Atomic pointers grounded simple boards, then failed at coupled crosses.</h3>
+            <p>Tying each board square to one existing vocabulary glyph produced real transfer: 93% opening legality and 44% one-anchor legality. Controlled-cross legality reached only 3/40. On a fresh adversarial 200-board gate the best cross checkpoint gained just one percentage point over the pre-cross model.</p>
+            <div class="evidence"><div><b>93%</b><small>opening legality retained</small></div><div><b>44%</b><small>one-anchor legality</small></div><div><b>3 / 40</b><small>controlled-cross legality</small></div></div>
+            <p>A 400-board true-cross control then regressed from 10.75% to 6.50% legal under ordinary SFT. Exact eight-positive marginal-likelihood training collapsed the output grammar completely: 0/400 parseable and 0/400 legal after about $2.8 total paid V11 spend.</p>
+            <div class="lesson"><div class="learned"><strong>Kept</strong>Atomic square pointers remove a real representation burden on openings and simple anchors.</div><div class="avoid"><strong>Never repeat</strong>Do not continue unaided full-board SFT, verifier RL, or multi-positive MML from this objective.</div></div>
+          </div>
+        </article>
+
+        <article class="event">
+          <div class="tile">V12<sup>12</sup></div>
+          <div class="event-card" data-tone="bad">
+            <div class="version"><span class="pill bad">Off-target experiment</span><span>CPU pairwise ranker · complete legal space</span></div>
+            <h3>The ranker worked, but it tested the wrong capability.</h3>
+            <p>A symbolic generator enumerated every legal move while scores stayed in evaluator-only files. A 15-feature linear ranker trained on 240 boards and 103,042 legal candidates. It passed validation, then reached 83% exact top-1 on the frozen 300-game test with no whole-game overlap.</p>
+            <div class="evidence"><div><b>83.00%</b><small>frozen 300-board top-1</small></div><div><b>97.60%</b><small>frozen-test point ratio</small></div><div><b>100%</b><small>optimal recall@32</small></div></div>
+            <p>The model was frozen before one official confirmation. On the 100 public benchmark positions it reached 74% exact-optimal top-1 and 93.66% point ratio; face-value reached 15.2%. Official top-1 remained 60% on boards with more than 512 legal candidates.</p>
+            <div class="lesson"><div class="learned"><strong>Kept separately</strong>Legal search plus learned value ranking is a viable hybrid diagnostic and its artifacts remain reproducible.</div><div class="avoid"><strong>Does not count</strong>The symbolic solver already performed candidate discovery. The 74% result must never be described as progress toward the unaided 50% goal.</div></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="patterns">
+      <div class="section-head"><div class="label">Across every version</div><div><h2>The recurring pattern is now unmistakable.</h2><p class="muted">The model is much better at evaluating a reduced action space than constructing a legal, optimal action from the raw board.</p></div></div>
+      <table class="matrix">
+        <thead><tr><th>Approach</th><th>What improved</th><th>What stayed broken</th><th>Verdict</th></tr></thead>
+        <tbody>
+          <tr><td>More SFT / lower loss</td><td>Format, brevity, imitation</td><td>Free legality and board execution</td><td class="no">Do not scale alone</td></tr>
+          <tr><td>More data</td><td>V9 spatial recall rose monotonically</td><td>Still far from end-to-end optimal moves</td><td class="maybe">Useful with the right objective</td></tr>
+          <tr><td>Bigger model</td><td>Recognition under scaffolding</td><td>0/320 legal free answers in V5</td><td class="no">Premature</td></tr>
+          <tr><td>Factorized output</td><td>Individual row/direction tasks</td><td>Composition and legality</td><td class="no">Formatting is not the bottleneck</td></tr>
+          <tr><td>Verifier feedback</td><td>Occasional genuine recovery</td><td>Most groups contain no legal sample</td><td class="maybe">Use offline, after candidates exist</td></tr>
+          <tr><td>Supplied candidates/plans</td><td>46% rank, 98% legal execution, 69.57% oracle-plan optimal</td><td>Candidate discovery</td><td class="yes">Strongest reusable capability</td></tr>
+          <tr><td>Unconstrained spatial head</td><td>51.80% optimal-slot recall@32 ensemble</td><td>Top-1 and word choice</td><td class="maybe">Keep as a proposal signal</td></tr>
+          <tr><td>Thinking-trace distillation</td><td>Shorter, structured completions</td><td>0/5 legality at every checkpoint</td><td class="no">Rejected by V10</td></tr>
+          <tr><td>Atomic square pointers</td><td>93% opening and 44% one-anchor legality</td><td>Cross-word composition and retention</td><td class="maybe">Useful representation, wrong free policy</td></tr>
+          <tr><td>Complete legal space + score-blind ranker</td><td>74% official exact-optimal; 93.66% point ratio</td><td>Solver performs all candidate discovery</td><td class="no">Off-target for the 50% goal</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="rules">
+      <div class="section-head"><div class="label">Lab rules</div><div><h2>How we avoid repeating ourselves.</h2><p class="muted">These are gates, not suggestions. A new run should explicitly state which rule it satisfies.</p></div></div>
+      <div class="rule-grid">
+        <article class="rule"><h3>Freeze the meaning of 50%.</h3><p>Single answer, exactly optimal, legal, whole-game held-out. Pass@k, slot recall, and candidate ranking remain secondary metrics.</p></article>
+        <article class="rule"><h3>Split by whole game first.</h3><p>No board, rack hash, game seed, augmentation sibling, or benchmark position may cross train, validation, selection, and final test.</p></article>
+        <article class="rule"><h3>Behavior beats loss.</h3><p>Checkpoint selection uses frozen legality, optimality, score ratio, and coverage—not training loss or teacher-forced perplexity.</p></article>
+        <article class="rule"><h3>Beat the cheap baseline.</h3><p>A learned ranker must outperform random, longest-word, face-value, and frequency heuristics on the same full candidate space.</p></article>
+        <article class="rule"><h3>Test one causal claim.</h3><p>Every experiment changes one bottleneck and includes an intervention or control that could falsify the story.</p></article>
+        <article class="rule"><h3>Audit labels independently.</h3><p>Quackle parity, all tied optima, set-valued targets, and evaluator regression tests happen before GPU spend.</p></article>
+        <article class="rule"><h3>Regression-test retained skills.</h3><p>Paired boards must show whether a new objective adds capability or merely changes which boards happen to succeed.</p></article>
+        <article class="rule"><h3>RL needs reward diversity.</h3><p>No online RL until enough rollout groups contain both legal successes and informative failures; all-zero groups teach nothing.</p></article>
+        <article class="rule"><h3>Preflight the immutable bundle.</h3><p>Verify the lexicon, tokenizer/chat template, token ceiling, one full example, upload paths, and evaluator imports before starting billed training.</p></article>
+        <article class="rule"><h3>Checkpoint before evaluation.</h3><p>Upload completed training artifacts before long gates, log cost and hashes, resume evaluation without retraining, and stop idle Colab/HF resources.</p></article>
+      </div>
+    </section>
+
+    <section id="next">
+      <div class="section-head"><div class="label">Current recommendation</div><div><h2>Return to the unaided generation target.</h2></div></div>
+      <div class="next">
+        <div>
+          <h3>Do not choose the next experiment by proxy</h3>
+          <p>The next experiment must evaluate a model that receives only the board and rack and emits one move. No solver candidates, plans, coordinates, scores, or hidden search artifacts may enter the inference path.</p>
+          <p><strong>Decision required:</strong> V12 is retained only as an explicitly separate diagnostic. Do not infer a V13 direction from it or run another benchmark until the target-aligned hypothesis is agreed with the user.</p>
+        </div>
+        <ul class="gate-list">
+          <li><b>Input</b><span>Board and rack only</span></li>
+          <li><b>Output</b><span>One legal move without candidate scaffolding</span></li>
+          <li><b>Primary</b><span>Exact-optimal single-answer accuracy</span></li>
+          <li><b>Split</b><span>Whole-game-held-out frozen evaluation</span></li>
+          <li><b>Naming</b><span>Never substitute a proxy for free play</span></li>
+        </ul>
+      </div>
+      <div class="callout"><strong>Correction:</strong> V12 changed the task instead of testing the requested capability. Its 74% hybrid result is not a project milestone. The unaided 50% target remains open.</div>
+    </section>
+
+    <section id="evidence">
+      <div class="section-head"><div class="label">Evidence index</div><div><h2>Trace every claim back to artifacts.</h2><p class="muted">The page is a readable memory, not a replacement for raw evaluations.</p></div></div>
+      <div class="links">
+        <a href="https://github.com/cochon123/benchmark_scrabble/blob/main/docs/report/REPORT.md">Smoke specialization ledger</a>
+        <a href="/scrabble-v2/">V2 final report</a>
+        <a href="/scrabble-v3/">V3 final report</a>
+        <a href="/scrabble-v4/">V4–V9 detailed report</a>
+        <a href="/scrabble-v4/#learning-curve">V9 learning curve</a>
+        <a href="/scrabble-v4/#next">V9 decision and evidence</a>
+        <a href="https://github.com/cochon123/benchmark_scrabble/blob/main/docs/EXPERIMENT_LOG.md#v10-thinking-distillation-free-compute-pilot">V10 experiment log</a>
+        <a href="https://github.com/cochon123/benchmark_scrabble/blob/main/docs/EXPERIMENT_LOG.md#v11-atomic-pointer-legality-pilot">V11 experiment log</a>
+        <a href="https://github.com/cochon123/benchmark_scrabble/blob/main/docs/V12_LEGAL_RANKING.md">V12 architecture contract</a>
+        <a href="https://github.com/cochon123/benchmark_scrabble/blob/main/artifacts/v12_legal_ranking/summary.json">V12 result summary</a>
+        <a href="https://github.com/cochon123/benchmark_scrabble">Repository on GitHub</a>
+      </div>
+      <details><summary>Metric caveats preserved for future readers</summary>
+        <p class="muted">The 100% smoke result is contaminated. V2 exact optimal counts include a maximum of two attempts. V4’s 46% result ranks supplied candidates. V4.1’s 44% ranks complete supplied plans. V4.2’s 5% is pass@32, not greedy accuracy. V8’s 13% is a post-hoc length-normalized full-candidate ranker. V9’s 25.25% ranks slots inside a teacher-generated shortlist with 100% optimal coverage by construction. V10 used only five frozen boards per checkpoint. V11’s opening and one-anchor results are restricted curriculum gates. V12’s 74% is an end-to-end single-answer hybrid result whose internal symbolic component enumerates the complete legal space; it is not unaided LLM generation.</p>
+      </details>
+    </section>
+  </main>
+
+  <footer><div class="wrap">Scrabble AI experiment memory · maintained as the project’s decision ledger · last updated August 13, 2026</div></footer>
+  <script>
+    (() => {
+      const bar = document.getElementById('reading-progress');
+      const update = () => {
+        const total = document.documentElement.scrollHeight - innerHeight;
+        bar.style.width = `${total > 0 ? (scrollY / total) * 100 : 0}%`;
+      };
+      addEventListener('scroll', update, {passive:true}); update();
+    })();
+  </script>
+</body>
+</html>

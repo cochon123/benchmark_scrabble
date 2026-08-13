@@ -39,6 +39,22 @@ def _board_ascii(position: dict[str, Any]) -> list[str]:
     return [f"{row:02d} {' '.join(chars)}" for row, chars in enumerate(grid)]
 
 
+def dense_board_text(position: dict[str, Any]) -> str:
+    """Return a coordinate-stable dense board representation for model prompts."""
+    grid = [["." for _ in range(15)] for _ in range(15)]
+    for cell in position["board"]:
+        letter = str(cell["letter"]).upper()
+        if bool(cell.get("is_blank", False)):
+            letter = letter.lower()
+        grid[int(cell["row"])][int(cell["col"])] = letter
+    lines = ["   " + " ".join(f"{col:02d}" for col in range(15))]
+    lines.extend(
+        f"{row:02d} " + "  ".join(grid[row])
+        for row in range(15)
+    )
+    return "\n".join(lines)
+
+
 def _board_display(position: dict[str, Any], placements: list[Placement] | None = None, highlight_color: str | None = None) -> list[str]:
     grid = [["." for _ in range(15)] for _ in range(15)]
     for cell in position["board"]:
@@ -119,9 +135,12 @@ def _retry_feedback(position: dict[str, Any], raw_response: str, error: str) -> 
 def prompt_for_position(
     position: dict[str, Any],
     retry_state: dict[str, str] | None = None,
+    *,
+    board_encoding: str = "sparse",
 ) -> list[dict[str, str]]:
-    system = "\n".join(
-        [
+    if board_encoding not in {"sparse", "dense"}:
+        raise ValueError(f"Unsupported board encoding: {board_encoding}")
+    system_lines = [
             "You are a Scrabble benchmarking agent.",
             "The game is played in English and the loaded dictionary expects valid English words.",
             "Return your move as one final JSON object.",
@@ -134,13 +153,18 @@ def prompt_for_position(
             "Never invent letters outside the rack. A ? in the rack may stand for one missing letter.",
             "Keep the visible answer to the JSON object only.",
             "Do not include prose before or after the JSON object.",
-        ]
-    )
+    ]
+    if board_encoding == "dense":
+        system_lines.insert(
+            -2,
+            "In a dense board grid, . is empty and a lowercase letter is an existing "
+            "zero-point blank tile.",
+        )
+    system = "\n".join(system_lines)
     payload = {
         "benchmark": "highest-immediate-score-only",
         "board_size": 15,
         "rack": list(position["rack"]),
-        "board": position["board"],
         "instruction": (
             "Return the legal move with the highest immediate raw Scrabble score. "
             "Return only newly placed tiles in placements."
@@ -151,6 +175,11 @@ def prompt_for_position(
             "correct_response": {"tool": "play_move", "arguments": {"placements": [{"row": 6, "col": 13, "letter": "D"}]}},
         },
     }
+    if board_encoding == "dense":
+        payload["board_encoding"] = "dense-grid"
+        payload["board_grid"] = dense_board_text(position).splitlines()
+    else:
+        payload["board"] = position["board"]
     messages: list[dict[str, str]] = [
         {"role": "system", "content": system},
         {"role": "user", "content": json.dumps(payload)},

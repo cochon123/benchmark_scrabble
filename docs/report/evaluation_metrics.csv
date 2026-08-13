@@ -1,0 +1,5 @@
+label,path,boards,raw_points,optimal_points,score_pct,optimal_move_pct,legal_move_pct,elapsed_seconds
+Base model,artifacts/baseline-smoke.json,5,3,158,1.8987341772151898,0.0,20.0,48.564714431762695
+Clean QLoRA,artifacts/evaluations/clean-official-smoke.json,5,0,158,0.0,0.0,0.0,190.52610898017883
+Broad specialized,artifacts/evaluations/specialized-final-smoke.json,5,40,158,25.31645569620253,20.0,20.0,147.33068251609802
+Focused specialized,artifacts/evaluations/smoke-specialized-100.json,5,158,158,100.0,100.0,100.0,51.38164973258972

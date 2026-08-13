@@ -1,0 +1,1 @@
+{"action":"evaluate","label":"stage4_true_cross_sft_retention","adapter":"/content/v11/artifacts/v11_colab/stage4_true_cross_sft/checkpoint-125","dataset":"data/v11_atomic_policy/frozen_gate.json","categories":["opening","one_anchor"],"limit":100,"attempts":1,"sample_attempts":0,"temperature":0.8,"sample_batch_size":2}

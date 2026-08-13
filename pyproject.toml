@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scrabble-llm-benchmark"
+version = "0.1.0"
+description = "Train and evaluate language models on exact immediate-score Scrabble moves."
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+train = [
+  "accelerate>=1.2",
+  "bitsandbytes>=0.45",
+  "datasets>=3.2",
+  "jinja2>=3.1",
+  "peft>=0.14",
+  "safetensors>=0.4",
+  "torch>=2.5",
+  "transformers>=4.48",
+]
+
+[tool.setuptools.packages.find]
+include = ["scrabble_bench*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

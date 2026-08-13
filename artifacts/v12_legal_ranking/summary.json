@@ -1,0 +1,46 @@
+{
+  "version": "v12-legal-ranking-pilot-1",
+  "architecture": "score-blind full-legal-space hybrid with a 15-feature pairwise linear ranker",
+  "model_sha256": "78293c5377ae4a2affae7f46a24120e7a32c626964a2eb70fb90672fc098b450",
+  "data": {
+    "train_boards": 240,
+    "train_candidates": 103042,
+    "validation_boards": 144,
+    "validation_candidates": 70197,
+    "frozen_test_boards": 300,
+    "frozen_test_candidates": 117465,
+    "whole_game_overlap": 0,
+    "frozen_test_candidates_sha256": "413c6ed82a790697052f16f565a822a907302c5acfe931f30ac2a18f864e54cf",
+    "official_positions_sha256": "8a2fd0f49b97a93be1c0b735769b47f0083113f31d3fb8118d976381624a9e32"
+  },
+  "validation": {
+    "exact_optimal_top1_pct": 84.02777777777779,
+    "point_ratio_pct": 97.23735408560312,
+    "optimal_recall_at_32_pct": 99.30555555555556,
+    "all_gates_passed": true
+  },
+  "frozen_test": {
+    "exact_optimal_top1_pct": 83.0,
+    "point_ratio_pct": 97.60254188330445,
+    "optimal_recall_at_32_pct": 100.0,
+    "top1_vs_face_value_lower_95": 0.6072828282828283,
+    "gt_512_candidate_top1_pct": 80.3921568627451,
+    "all_gates_passed": true,
+    "artifact_sha256": "654602a51f32e90f259770fcd49d566ce78a53b28d291e76ebbad88cabdb1d6c"
+  },
+  "official_confirmation": {
+    "boards": 100,
+    "unique_games": 42,
+    "exact_optimal_top1_pct": 74.0,
+    "point_ratio_pct": 93.66377107818089,
+    "optimal_recall_at_32_pct": 100.0,
+    "face_value_top1_pct": 15.2,
+    "top1_vs_face_value_lower_95": 0.48383333333333334,
+    "gt_512_candidate_top1_pct": 60.0,
+    "confirmation_gate_passed": true,
+    "artifact_sha256": "0d4e98c410adebe5b74cb1bda569d4ae5f36877b7a64ac6b5c97c9605b7ceab7"
+  },
+  "decision": "retain_as_off_target_diagnostic_not_project_milestone",
+  "caveat": "The symbolic component enumerates the complete legal move space. This is an end-to-end single-answer hybrid result, not unaided LLM free play. If exact symbolic scores are allowed at inference, selecting their maximum is deterministically superior to the learned ranker.",
+  "next": "Return to the unaided board-and-rack generation target. Do not choose another proxy experiment without explicit user agreement."
+}

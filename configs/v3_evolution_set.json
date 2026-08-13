@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "name": "V3 five-board evolution diagnostic",
+  "source": "data/general_v3_sft/selection_positions.json",
+  "usage": "Fixed validation-only diagnostic; never use for training, checkpoint selection, or hyperparameter changes.",
+  "position_ids": [
+    "train-500080-0",
+    "train-500081-4",
+    "train-500082-7",
+    "train-500083-10",
+    "train-500084-14"
+  ],
+  "checkpoint_labels": [
+    "base",
+    "step-100",
+    "step-500",
+    "step-1000",
+    "step-1500",
+    "step-2000",
+    "step-2500",
+    "final"
+  ],
+  "protocol": {
+    "board_encoding": "dense",
+    "decoding": "greedy",
+    "seed": 3407,
+    "max_attempts": 2,
+    "max_new_tokens": 256
+  }
+}

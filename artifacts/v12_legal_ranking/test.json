@@ -1,0 +1,3048 @@
+{
+  "metrics": {
+    "boards": 300,
+    "exact_optimal_top1_pct": 83.0,
+    "point_ratio_pct": 97.60254188330445,
+    "optimal_recall_at_32_pct": 100
+  },
+  "by_candidate_count": {
+    "le_128": {
+      "boards": 67,
+      "exact_optimal_top1_pct": 86.56716417910447,
+      "point_ratio_pct": 98.89982628836133,
+      "optimal_recall_at_32_pct": 100
+    },
+    "129_256": {
+      "boards": 105,
+      "exact_optimal_top1_pct": 85.71428571428571,
+      "point_ratio_pct": 98.56532356532357,
+      "optimal_recall_at_32_pct": 100
+    },
+    "257_512": {
+      "boards": 77,
+      "exact_optimal_top1_pct": 77.92207792207793,
+      "point_ratio_pct": 98.0007404664939,
+      "optimal_recall_at_32_pct": 100
+    },
+    "gt_512": {
+      "boards": 51,
+      "exact_optimal_top1_pct": 80.3921568627451,
+      "point_ratio_pct": 95.19015659955257,
+      "optimal_recall_at_32_pct": 100
+    }
+  },
+  "top1_vs_face_value": {
+    "delta": 0.6651955266955266,
+    "lower_95": 0.6072828282828283,
+    "upper_95": 0.7215815295815295
+  },
+  "gates": {
+    "exact_optimal_top1_at_least_25pct": true,
+    "point_ratio_at_least_70pct": true,
+    "optimal_recall_at_32_at_least_80pct": true,
+    "paired_95pct_lower_bound_beats_face_value": true
+  },
+  "all_gates_passed": true,
+  "details": [
+    {
+      "board_id": "train-1200032-6",
+      "candidate_count": 232,
+      "selected_score": 19,
+      "optimal_score": 19,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200033-7",
+      "candidate_count": 257,
+      "selected_score": 28,
+      "optimal_score": 28,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200034-8",
+      "candidate_count": 373,
+      "selected_score": 25,
+      "optimal_score": 25,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200035-9",
+      "candidate_count": 3739,
+      "selected_score": 80,
+      "optimal_score": 80,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200036-10",
+      "candidate_count": 251,
+      "selected_score": 30,
+      "optimal_score": 30,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200037-11",
+      "candidate_count": 278,
+      "selected_score": 31,
+      "optimal_score": 31,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200038-12",
+      "candidate_count": 133,
+      "selected_score": 47,
+      "optimal_score": 47,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200039-13",
+      "candidate_count": 197,
+      "selected_score": 18,
+      "optimal_score": 18,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200040-14",
+      "candidate_count": 115,
+      "selected_score": 16,
+      "optimal_score": 16,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200041-6",
+      "candidate_count": 133,
+      "selected_score": 39,
+      "optimal_score": 50,
+      "optimal_top1": false,
+      "point_ratio": 0.78,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200042-7",
+      "candidate_count": 295,
+      "selected_score": 26,
+      "optimal_score": 26,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200043-8",
+      "candidate_count": 99,
+      "selected_score": 39,
+      "optimal_score": 39,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200044-9",
+      "candidate_count": 247,
+      "selected_score": 41,
+      "optimal_score": 41,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200045-10",
+      "candidate_count": 227,
+      "selected_score": 28,
+      "optimal_score": 28,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200046-11",
+      "candidate_count": 270,
+      "selected_score": 23,
+      "optimal_score": 36,
+      "optimal_top1": false,
+      "point_ratio": 0.6388888888888888,
+      "optimal_rank": 3,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200047-12",
+      "candidate_count": 207,
+      "selected_score": 42,
+      "optimal_score": 46,
+      "optimal_top1": false,
+      "point_ratio": 0.9130434782608695,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200048-13",
+      "candidate_count": 64,
+      "selected_score": 18,
+      "optimal_score": 18,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200049-14",
+      "candidate_count": 642,
+      "selected_score": 44,
+      "optimal_score": 44,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200050-6",
+      "candidate_count": 443,
+      "selected_score": 28,
+      "optimal_score": 28,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200051-7",
+      "candidate_count": 306,
+      "selected_score": 36,
+      "optimal_score": 36,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200052-8",
+      "candidate_count": 328,
+      "selected_score": 32,
+      "optimal_score": 32,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200053-9",
+      "candidate_count": 182,
+      "selected_score": 57,
+      "optimal_score": 57,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200054-10",
+      "candidate_count": 81,
+      "selected_score": 23,
+      "optimal_score": 23,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200055-11",
+      "candidate_count": 200,
+      "selected_score": 54,
+      "optimal_score": 54,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200056-12",
+      "candidate_count": 363,
+      "selected_score": 28,
+      "optimal_score": 28,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200057-13",
+      "candidate_count": 37,
+      "selected_score": 11,
+      "optimal_score": 11,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200058-14",
+      "candidate_count": 391,
+      "selected_score": 38,
+      "optimal_score": 38,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200059-6",
+      "candidate_count": 227,
+      "selected_score": 37,
+      "optimal_score": 37,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200060-7",
+      "candidate_count": 330,
+      "selected_score": 16,
+      "optimal_score": 18,
+      "optimal_top1": false,
+      "point_ratio": 0.8888888888888888,
+      "optimal_rank": 4,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200061-8",
+      "candidate_count": 161,
+      "selected_score": 37,
+      "optimal_score": 37,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200062-9",
+      "candidate_count": 368,
+      "selected_score": 35,
+      "optimal_score": 36,
+      "optimal_top1": false,
+      "point_ratio": 0.9722222222222222,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200063-10",
+      "candidate_count": 25,
+      "selected_score": 20,
+      "optimal_score": 20,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200065-11",
+      "candidate_count": 664,
+      "selected_score": 45,
+      "optimal_score": 60,
+      "optimal_top1": false,
+      "point_ratio": 0.75,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200066-12",
+      "candidate_count": 187,
+      "selected_score": 43,
+      "optimal_score": 43,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200067-13",
+      "candidate_count": 339,
+      "selected_score": 34,
+      "optimal_score": 34,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200068-14",
+      "candidate_count": 403,
+      "selected_score": 31,
+      "optimal_score": 31,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200069-6",
+      "candidate_count": 42,
+      "selected_score": 24,
+      "optimal_score": 24,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200070-7",
+      "candidate_count": 437,
+      "selected_score": 68,
+      "optimal_score": 68,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200071-8",
+      "candidate_count": 1483,
+      "selected_score": 75,
+      "optimal_score": 75,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200072-9",
+      "candidate_count": 161,
+      "selected_score": 28,
+      "optimal_score": 28,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200073-10",
+      "candidate_count": 58,
+      "selected_score": 38,
+      "optimal_score": 38,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200074-11",
+      "candidate_count": 126,
+      "selected_score": 60,
+      "optimal_score": 60,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200075-12",
+      "candidate_count": 64,
+      "selected_score": 17,
+      "optimal_score": 17,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200076-13",
+      "candidate_count": 1012,
+      "selected_score": 41,
+      "optimal_score": 41,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200077-14",
+      "candidate_count": 75,
+      "selected_score": 15,
+      "optimal_score": 17,
+      "optimal_top1": false,
+      "point_ratio": 0.8823529411764706,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200078-6",
+      "candidate_count": 233,
+      "selected_score": 27,
+      "optimal_score": 27,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200079-7",
+      "candidate_count": 219,
+      "selected_score": 32,
+      "optimal_score": 32,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200080-8",
+      "candidate_count": 307,
+      "selected_score": 38,
+      "optimal_score": 38,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200081-9",
+      "candidate_count": 194,
+      "selected_score": 23,
+      "optimal_score": 25,
+      "optimal_top1": false,
+      "point_ratio": 0.92,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200082-10",
+      "candidate_count": 340,
+      "selected_score": 83,
+      "optimal_score": 83,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200083-11",
+      "candidate_count": 390,
+      "selected_score": 29,
+      "optimal_score": 29,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200084-12",
+      "candidate_count": 1456,
+      "selected_score": 33,
+      "optimal_score": 34,
+      "optimal_top1": false,
+      "point_ratio": 0.9705882352941176,
+      "optimal_rank": 4,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200085-13",
+      "candidate_count": 206,
+      "selected_score": 42,
+      "optimal_score": 42,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200086-14",
+      "candidate_count": 179,
+      "selected_score": 36,
+      "optimal_score": 36,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200087-6",
+      "candidate_count": 188,
+      "selected_score": 42,
+      "optimal_score": 42,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200088-7",
+      "candidate_count": 801,
+      "selected_score": 30,
+      "optimal_score": 30,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200089-8",
+      "candidate_count": 628,
+      "selected_score": 29,
+      "optimal_score": 29,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200090-9",
+      "candidate_count": 343,
+      "selected_score": 25,
+      "optimal_score": 25,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200091-10",
+      "candidate_count": 625,
+      "selected_score": 38,
+      "optimal_score": 38,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200092-11",
+      "candidate_count": 569,
+      "selected_score": 30,
+      "optimal_score": 30,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200093-12",
+      "candidate_count": 165,
+      "selected_score": 16,
+      "optimal_score": 16,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200094-13",
+      "candidate_count": 563,
+      "selected_score": 34,
+      "optimal_score": 34,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200095-14",
+      "candidate_count": 1705,
+      "selected_score": 42,
+      "optimal_score": 42,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200096-6",
+      "candidate_count": 223,
+      "selected_score": 26,
+      "optimal_score": 27,
+      "optimal_top1": false,
+      "point_ratio": 0.9629629629629629,
+      "optimal_rank": 4,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200097-7",
+      "candidate_count": 351,
+      "selected_score": 74,
+      "optimal_score": 74,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200098-8",
+      "candidate_count": 1839,
+      "selected_score": 31,
+      "optimal_score": 33,
+      "optimal_top1": false,
+      "point_ratio": 0.9393939393939394,
+      "optimal_rank": 3,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200099-9",
+      "candidate_count": 248,
+      "selected_score": 22,
+      "optimal_score": 22,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200100-10",
+      "candidate_count": 238,
+      "selected_score": 33,
+      "optimal_score": 33,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200101-11",
+      "candidate_count": 828,
+      "selected_score": 37,
+      "optimal_score": 37,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200102-12",
+      "candidate_count": 489,
+      "selected_score": 37,
+      "optimal_score": 37,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200103-13",
+      "candidate_count": 162,
+      "selected_score": 22,
+      "optimal_score": 22,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200104-14",
+      "candidate_count": 3074,
+      "selected_score": 18,
+      "optimal_score": 86,
+      "optimal_top1": false,
+      "point_ratio": 0.20930232558139536,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200105-6",
+      "candidate_count": 152,
+      "selected_score": 31,
+      "optimal_score": 31,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200106-7",
+      "candidate_count": 201,
+      "selected_score": 14,
+      "optimal_score": 16,
+      "optimal_top1": false,
+      "point_ratio": 0.875,
+      "optimal_rank": 5,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200107-8",
+      "candidate_count": 181,
+      "selected_score": 28,
+      "optimal_score": 28,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200108-9",
+      "candidate_count": 132,
+      "selected_score": 18,
+      "optimal_score": 18,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200109-10",
+      "candidate_count": 146,
+      "selected_score": 17,
+      "optimal_score": 17,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200110-11",
+      "candidate_count": 131,
+      "selected_score": 31,
+      "optimal_score": 31,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200111-12",
+      "candidate_count": 942,
+      "selected_score": 76,
+      "optimal_score": 76,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200112-13",
+      "candidate_count": 78,
+      "selected_score": 17,
+      "optimal_score": 20,
+      "optimal_top1": false,
+      "point_ratio": 0.85,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200113-14",
+      "candidate_count": 188,
+      "selected_score": 25,
+      "optimal_score": 27,
+      "optimal_top1": false,
+      "point_ratio": 0.9259259259259259,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200114-6",
+      "candidate_count": 203,
+      "selected_score": 36,
+      "optimal_score": 36,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200115-7",
+      "candidate_count": 216,
+      "selected_score": 24,
+      "optimal_score": 24,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200116-8",
+      "candidate_count": 90,
+      "selected_score": 16,
+      "optimal_score": 16,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200117-9",
+      "candidate_count": 246,
+      "selected_score": 27,
+      "optimal_score": 27,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200118-10",
+      "candidate_count": 251,
+      "selected_score": 30,
+      "optimal_score": 33,
+      "optimal_top1": false,
+      "point_ratio": 0.9090909090909091,
+      "optimal_rank": 3,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200119-11",
+      "candidate_count": 491,
+      "selected_score": 30,
+      "optimal_score": 30,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200120-12",
+      "candidate_count": 145,
+      "selected_score": 27,
+      "optimal_score": 27,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200121-13",
+      "candidate_count": 136,
+      "selected_score": 24,
+      "optimal_score": 24,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200122-14",
+      "candidate_count": 125,
+      "selected_score": 34,
+      "optimal_score": 34,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200123-6",
+      "candidate_count": 194,
+      "selected_score": 34,
+      "optimal_score": 34,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200124-7",
+      "candidate_count": 82,
+      "selected_score": 16,
+      "optimal_score": 16,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200125-8",
+      "candidate_count": 28,
+      "selected_score": 17,
+      "optimal_score": 17,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200126-9",
+      "candidate_count": 751,
+      "selected_score": 70,
+      "optimal_score": 70,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200127-10",
+      "candidate_count": 350,
+      "selected_score": 26,
+      "optimal_score": 32,
+      "optimal_top1": false,
+      "point_ratio": 0.8125,
+      "optimal_rank": 3,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200128-11",
+      "candidate_count": 436,
+      "selected_score": 26,
+      "optimal_score": 27,
+      "optimal_top1": false,
+      "point_ratio": 0.9629629629629629,
+      "optimal_rank": 7,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200129-12",
+      "candidate_count": 1059,
+      "selected_score": 28,
+      "optimal_score": 28,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200130-13",
+      "candidate_count": 349,
+      "selected_score": 26,
+      "optimal_score": 26,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200131-14",
+      "candidate_count": 627,
+      "selected_score": 76,
+      "optimal_score": 76,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200132-6",
+      "candidate_count": 340,
+      "selected_score": 27,
+      "optimal_score": 27,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200133-7",
+      "candidate_count": 34,
+      "selected_score": 19,
+      "optimal_score": 19,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200134-8",
+      "candidate_count": 102,
+      "selected_score": 18,
+      "optimal_score": 20,
+      "optimal_top1": false,
+      "point_ratio": 0.9,
+      "optimal_rank": 9,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200135-9",
+      "candidate_count": 300,
+      "selected_score": 39,
+      "optimal_score": 39,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200136-10",
+      "candidate_count": 81,
+      "selected_score": 14,
+      "optimal_score": 14,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200137-11",
+      "candidate_count": 230,
+      "selected_score": 39,
+      "optimal_score": 39,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200138-12",
+      "candidate_count": 70,
+      "selected_score": 33,
+      "optimal_score": 34,
+      "optimal_top1": false,
+      "point_ratio": 0.9705882352941176,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200139-13",
+      "candidate_count": 171,
+      "selected_score": 26,
+      "optimal_score": 26,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200140-14",
+      "candidate_count": 272,
+      "selected_score": 26,
+      "optimal_score": 27,
+      "optimal_top1": false,
+      "point_ratio": 0.9629629629629629,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200141-6",
+      "candidate_count": 145,
+      "selected_score": 48,
+      "optimal_score": 48,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200142-7",
+      "candidate_count": 359,
+      "selected_score": 21,
+      "optimal_score": 21,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200143-8",
+      "candidate_count": 351,
+      "selected_score": 36,
+      "optimal_score": 36,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200144-9",
+      "candidate_count": 389,
+      "selected_score": 45,
+      "optimal_score": 45,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200145-10",
+      "candidate_count": 367,
+      "selected_score": 22,
+      "optimal_score": 22,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200146-11",
+      "candidate_count": 430,
+      "selected_score": 39,
+      "optimal_score": 39,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200147-12",
+      "candidate_count": 506,
+      "selected_score": 21,
+      "optimal_score": 25,
+      "optimal_top1": false,
+      "point_ratio": 0.84,
+      "optimal_rank": 4,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200148-13",
+      "candidate_count": 368,
+      "selected_score": 20,
+      "optimal_score": 21,
+      "optimal_top1": false,
+      "point_ratio": 0.9523809523809523,
+      "optimal_rank": 3,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200149-14",
+      "candidate_count": 341,
+      "selected_score": 41,
+      "optimal_score": 41,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200150-6",
+      "candidate_count": 732,
+      "selected_score": 24,
+      "optimal_score": 24,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200151-7",
+      "candidate_count": 147,
+      "selected_score": 31,
+      "optimal_score": 31,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200152-8",
+      "candidate_count": 97,
+      "selected_score": 55,
+      "optimal_score": 55,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200153-9",
+      "candidate_count": 253,
+      "selected_score": 17,
+      "optimal_score": 17,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200154-10",
+      "candidate_count": 175,
+      "selected_score": 17,
+      "optimal_score": 17,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200155-11",
+      "candidate_count": 166,
+      "selected_score": 45,
+      "optimal_score": 45,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200156-12",
+      "candidate_count": 223,
+      "selected_score": 31,
+      "optimal_score": 31,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200157-13",
+      "candidate_count": 632,
+      "selected_score": 35,
+      "optimal_score": 35,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200158-14",
+      "candidate_count": 213,
+      "selected_score": 45,
+      "optimal_score": 45,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200159-6",
+      "candidate_count": 77,
+      "selected_score": 21,
+      "optimal_score": 21,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200160-7",
+      "candidate_count": 627,
+      "selected_score": 48,
+      "optimal_score": 48,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200161-8",
+      "candidate_count": 363,
+      "selected_score": 22,
+      "optimal_score": 26,
+      "optimal_top1": false,
+      "point_ratio": 0.8461538461538461,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200162-9",
+      "candidate_count": 130,
+      "selected_score": 26,
+      "optimal_score": 28,
+      "optimal_top1": false,
+      "point_ratio": 0.9285714285714286,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200163-10",
+      "candidate_count": 67,
+      "selected_score": 39,
+      "optimal_score": 39,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200164-11",
+      "candidate_count": 175,
+      "selected_score": 28,
+      "optimal_score": 28,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200165-12",
+      "candidate_count": 275,
+      "selected_score": 36,
+      "optimal_score": 36,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200166-13",
+      "candidate_count": 452,
+      "selected_score": 23,
+      "optimal_score": 26,
+      "optimal_top1": false,
+      "point_ratio": 0.8846153846153846,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200167-14",
+      "candidate_count": 160,
+      "selected_score": 26,
+      "optimal_score": 26,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200168-6",
+      "candidate_count": 297,
+      "selected_score": 18,
+      "optimal_score": 21,
+      "optimal_top1": false,
+      "point_ratio": 0.8571428571428571,
+      "optimal_rank": 3,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200169-7",
+      "candidate_count": 86,
+      "selected_score": 24,
+      "optimal_score": 24,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200170-8",
+      "candidate_count": 90,
+      "selected_score": 21,
+      "optimal_score": 21,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200171-9",
+      "candidate_count": 3028,
+      "selected_score": 68,
+      "optimal_score": 68,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200172-10",
+      "candidate_count": 858,
+      "selected_score": 38,
+      "optimal_score": 38,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200173-11",
+      "candidate_count": 103,
+      "selected_score": 18,
+      "optimal_score": 18,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200174-12",
+      "candidate_count": 256,
+      "selected_score": 22,
+      "optimal_score": 22,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200175-13",
+      "candidate_count": 109,
+      "selected_score": 33,
+      "optimal_score": 33,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200176-14",
+      "candidate_count": 240,
+      "selected_score": 23,
+      "optimal_score": 23,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200177-6",
+      "candidate_count": 606,
+      "selected_score": 40,
+      "optimal_score": 45,
+      "optimal_top1": false,
+      "point_ratio": 0.8888888888888888,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200178-7",
+      "candidate_count": 179,
+      "selected_score": 21,
+      "optimal_score": 24,
+      "optimal_top1": false,
+      "point_ratio": 0.875,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200179-8",
+      "candidate_count": 64,
+      "selected_score": 12,
+      "optimal_score": 13,
+      "optimal_top1": false,
+      "point_ratio": 0.9230769230769231,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200180-9",
+      "candidate_count": 187,
+      "selected_score": 55,
+      "optimal_score": 55,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200181-10",
+      "candidate_count": 168,
+      "selected_score": 24,
+      "optimal_score": 24,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200182-11",
+      "candidate_count": 126,
+      "selected_score": 27,
+      "optimal_score": 27,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200183-12",
+      "candidate_count": 219,
+      "selected_score": 36,
+      "optimal_score": 36,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200184-13",
+      "candidate_count": 723,
+      "selected_score": 75,
+      "optimal_score": 75,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200185-14",
+      "candidate_count": 203,
+      "selected_score": 20,
+      "optimal_score": 20,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200187-6",
+      "candidate_count": 169,
+      "selected_score": 32,
+      "optimal_score": 32,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200188-7",
+      "candidate_count": 105,
+      "selected_score": 34,
+      "optimal_score": 36,
+      "optimal_top1": false,
+      "point_ratio": 0.9444444444444444,
+      "optimal_rank": 3,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200189-8",
+      "candidate_count": 20,
+      "selected_score": 25,
+      "optimal_score": 25,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200190-9",
+      "candidate_count": 278,
+      "selected_score": 46,
+      "optimal_score": 46,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200191-10",
+      "candidate_count": 158,
+      "selected_score": 37,
+      "optimal_score": 37,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200192-11",
+      "candidate_count": 137,
+      "selected_score": 27,
+      "optimal_score": 29,
+      "optimal_top1": false,
+      "point_ratio": 0.9310344827586207,
+      "optimal_rank": 4,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200193-12",
+      "candidate_count": 19,
+      "selected_score": 18,
+      "optimal_score": 18,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200194-13",
+      "candidate_count": 34,
+      "selected_score": 18,
+      "optimal_score": 18,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200195-14",
+      "candidate_count": 96,
+      "selected_score": 18,
+      "optimal_score": 24,
+      "optimal_top1": false,
+      "point_ratio": 0.75,
+      "optimal_rank": 3,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200196-6",
+      "candidate_count": 318,
+      "selected_score": 24,
+      "optimal_score": 24,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200197-7",
+      "candidate_count": 744,
+      "selected_score": 42,
+      "optimal_score": 42,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200198-8",
+      "candidate_count": 59,
+      "selected_score": 42,
+      "optimal_score": 42,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200199-9",
+      "candidate_count": 6218,
+      "selected_score": 180,
+      "optimal_score": 180,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200200-10",
+      "candidate_count": 109,
+      "selected_score": 22,
+      "optimal_score": 22,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200201-11",
+      "candidate_count": 701,
+      "selected_score": 28,
+      "optimal_score": 28,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200202-12",
+      "candidate_count": 623,
+      "selected_score": 23,
+      "optimal_score": 36,
+      "optimal_top1": false,
+      "point_ratio": 0.6388888888888888,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200203-13",
+      "candidate_count": 61,
+      "selected_score": 28,
+      "optimal_score": 28,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200204-14",
+      "candidate_count": 209,
+      "selected_score": 36,
+      "optimal_score": 36,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200205-6",
+      "candidate_count": 300,
+      "selected_score": 32,
+      "optimal_score": 32,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200206-7",
+      "candidate_count": 213,
+      "selected_score": 22,
+      "optimal_score": 27,
+      "optimal_top1": false,
+      "point_ratio": 0.8148148148148148,
+      "optimal_rank": 4,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200207-8",
+      "candidate_count": 489,
+      "selected_score": 44,
+      "optimal_score": 44,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200208-9",
+      "candidate_count": 418,
+      "selected_score": 29,
+      "optimal_score": 29,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200209-10",
+      "candidate_count": 165,
+      "selected_score": 39,
+      "optimal_score": 39,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200210-11",
+      "candidate_count": 481,
+      "selected_score": 24,
+      "optimal_score": 26,
+      "optimal_top1": false,
+      "point_ratio": 0.9230769230769231,
+      "optimal_rank": 10,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200211-12",
+      "candidate_count": 50,
+      "selected_score": 74,
+      "optimal_score": 74,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200212-13",
+      "candidate_count": 251,
+      "selected_score": 31,
+      "optimal_score": 31,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200213-14",
+      "candidate_count": 38,
+      "selected_score": 48,
+      "optimal_score": 48,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200214-6",
+      "candidate_count": 20,
+      "selected_score": 13,
+      "optimal_score": 13,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200215-7",
+      "candidate_count": 543,
+      "selected_score": 32,
+      "optimal_score": 32,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200216-8",
+      "candidate_count": 270,
+      "selected_score": 35,
+      "optimal_score": 35,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200217-9",
+      "candidate_count": 238,
+      "selected_score": 18,
+      "optimal_score": 21,
+      "optimal_top1": false,
+      "point_ratio": 0.8571428571428571,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200218-10",
+      "candidate_count": 325,
+      "selected_score": 39,
+      "optimal_score": 39,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200219-11",
+      "candidate_count": 628,
+      "selected_score": 35,
+      "optimal_score": 35,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200220-12",
+      "candidate_count": 281,
+      "selected_score": 39,
+      "optimal_score": 39,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200222-13",
+      "candidate_count": 371,
+      "selected_score": 67,
+      "optimal_score": 67,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200223-14",
+      "candidate_count": 230,
+      "selected_score": 36,
+      "optimal_score": 36,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200224-6",
+      "candidate_count": 301,
+      "selected_score": 32,
+      "optimal_score": 38,
+      "optimal_top1": false,
+      "point_ratio": 0.8421052631578947,
+      "optimal_rank": 5,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200225-7",
+      "candidate_count": 328,
+      "selected_score": 32,
+      "optimal_score": 32,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200226-8",
+      "candidate_count": 142,
+      "selected_score": 26,
+      "optimal_score": 26,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200227-9",
+      "candidate_count": 432,
+      "selected_score": 26,
+      "optimal_score": 26,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200228-10",
+      "candidate_count": 209,
+      "selected_score": 45,
+      "optimal_score": 45,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200229-11",
+      "candidate_count": 190,
+      "selected_score": 36,
+      "optimal_score": 36,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200230-12",
+      "candidate_count": 162,
+      "selected_score": 30,
+      "optimal_score": 30,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200231-13",
+      "candidate_count": 142,
+      "selected_score": 30,
+      "optimal_score": 30,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200232-14",
+      "candidate_count": 289,
+      "selected_score": 41,
+      "optimal_score": 41,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200233-6",
+      "candidate_count": 71,
+      "selected_score": 17,
+      "optimal_score": 17,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200234-7",
+      "candidate_count": 980,
+      "selected_score": 85,
+      "optimal_score": 85,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200235-8",
+      "candidate_count": 729,
+      "selected_score": 31,
+      "optimal_score": 31,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200236-9",
+      "candidate_count": 145,
+      "selected_score": 24,
+      "optimal_score": 24,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200237-10",
+      "candidate_count": 598,
+      "selected_score": 70,
+      "optimal_score": 70,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200238-11",
+      "candidate_count": 364,
+      "selected_score": 27,
+      "optimal_score": 28,
+      "optimal_top1": false,
+      "point_ratio": 0.9642857142857143,
+      "optimal_rank": 6,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200239-12",
+      "candidate_count": 271,
+      "selected_score": 18,
+      "optimal_score": 18,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200240-13",
+      "candidate_count": 610,
+      "selected_score": 26,
+      "optimal_score": 29,
+      "optimal_top1": false,
+      "point_ratio": 0.896551724137931,
+      "optimal_rank": 4,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200241-14",
+      "candidate_count": 125,
+      "selected_score": 27,
+      "optimal_score": 27,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200242-6",
+      "candidate_count": 88,
+      "selected_score": 13,
+      "optimal_score": 13,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200243-7",
+      "candidate_count": 110,
+      "selected_score": 37,
+      "optimal_score": 37,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200244-8",
+      "candidate_count": 517,
+      "selected_score": 80,
+      "optimal_score": 80,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200245-9",
+      "candidate_count": 112,
+      "selected_score": 15,
+      "optimal_score": 15,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200246-10",
+      "candidate_count": 103,
+      "selected_score": 23,
+      "optimal_score": 23,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200247-11",
+      "candidate_count": 125,
+      "selected_score": 22,
+      "optimal_score": 22,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200248-12",
+      "candidate_count": 131,
+      "selected_score": 14,
+      "optimal_score": 14,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200249-13",
+      "candidate_count": 60,
+      "selected_score": 18,
+      "optimal_score": 18,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200250-14",
+      "candidate_count": 445,
+      "selected_score": 34,
+      "optimal_score": 34,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200251-6",
+      "candidate_count": 305,
+      "selected_score": 28,
+      "optimal_score": 30,
+      "optimal_top1": false,
+      "point_ratio": 0.9333333333333333,
+      "optimal_rank": 3,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200252-7",
+      "candidate_count": 4234,
+      "selected_score": 67,
+      "optimal_score": 70,
+      "optimal_top1": false,
+      "point_ratio": 0.9571428571428572,
+      "optimal_rank": 3,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200253-8",
+      "candidate_count": 364,
+      "selected_score": 62,
+      "optimal_score": 62,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200254-9",
+      "candidate_count": 281,
+      "selected_score": 33,
+      "optimal_score": 33,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200255-10",
+      "candidate_count": 238,
+      "selected_score": 22,
+      "optimal_score": 22,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200256-11",
+      "candidate_count": 4574,
+      "selected_score": 86,
+      "optimal_score": 86,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200257-12",
+      "candidate_count": 230,
+      "selected_score": 32,
+      "optimal_score": 32,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200258-13",
+      "candidate_count": 216,
+      "selected_score": 40,
+      "optimal_score": 40,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200259-14",
+      "candidate_count": 1690,
+      "selected_score": 64,
+      "optimal_score": 64,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200260-6",
+      "candidate_count": 212,
+      "selected_score": 34,
+      "optimal_score": 34,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200261-7",
+      "candidate_count": 315,
+      "selected_score": 26,
+      "optimal_score": 26,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200262-8",
+      "candidate_count": 185,
+      "selected_score": 30,
+      "optimal_score": 30,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200263-9",
+      "candidate_count": 536,
+      "selected_score": 28,
+      "optimal_score": 28,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200264-10",
+      "candidate_count": 249,
+      "selected_score": 51,
+      "optimal_score": 51,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200265-11",
+      "candidate_count": 479,
+      "selected_score": 30,
+      "optimal_score": 30,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200266-12",
+      "candidate_count": 222,
+      "selected_score": 19,
+      "optimal_score": 20,
+      "optimal_top1": false,
+      "point_ratio": 0.95,
+      "optimal_rank": 3,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200267-13",
+      "candidate_count": 176,
+      "selected_score": 30,
+      "optimal_score": 30,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200268-14",
+      "candidate_count": 103,
+      "selected_score": 34,
+      "optimal_score": 34,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200269-6",
+      "candidate_count": 965,
+      "selected_score": 45,
+      "optimal_score": 62,
+      "optimal_top1": false,
+      "point_ratio": 0.7258064516129032,
+      "optimal_rank": 6,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200270-7",
+      "candidate_count": 220,
+      "selected_score": 26,
+      "optimal_score": 26,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200271-8",
+      "candidate_count": 156,
+      "selected_score": 21,
+      "optimal_score": 21,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200272-9",
+      "candidate_count": 432,
+      "selected_score": 45,
+      "optimal_score": 45,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200273-10",
+      "candidate_count": 371,
+      "selected_score": 42,
+      "optimal_score": 42,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200274-11",
+      "candidate_count": 1152,
+      "selected_score": 28,
+      "optimal_score": 30,
+      "optimal_top1": false,
+      "point_ratio": 0.9333333333333333,
+      "optimal_rank": 3,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200275-12",
+      "candidate_count": 207,
+      "selected_score": 31,
+      "optimal_score": 36,
+      "optimal_top1": false,
+      "point_ratio": 0.8611111111111112,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200276-13",
+      "candidate_count": 460,
+      "selected_score": 40,
+      "optimal_score": 40,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200277-14",
+      "candidate_count": 566,
+      "selected_score": 45,
+      "optimal_score": 45,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200278-6",
+      "candidate_count": 546,
+      "selected_score": 24,
+      "optimal_score": 24,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200279-7",
+      "candidate_count": 49,
+      "selected_score": 8,
+      "optimal_score": 9,
+      "optimal_top1": false,
+      "point_ratio": 0.8888888888888888,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200280-8",
+      "candidate_count": 110,
+      "selected_score": 24,
+      "optimal_score": 24,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200281-9",
+      "candidate_count": 46,
+      "selected_score": 30,
+      "optimal_score": 30,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200282-10",
+      "candidate_count": 49,
+      "selected_score": 35,
+      "optimal_score": 35,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200283-11",
+      "candidate_count": 118,
+      "selected_score": 23,
+      "optimal_score": 24,
+      "optimal_top1": false,
+      "point_ratio": 0.9583333333333334,
+      "optimal_rank": 5,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200284-12",
+      "candidate_count": 365,
+      "selected_score": 25,
+      "optimal_score": 25,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200285-13",
+      "candidate_count": 28,
+      "selected_score": 8,
+      "optimal_score": 8,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200286-14",
+      "candidate_count": 129,
+      "selected_score": 19,
+      "optimal_score": 19,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200287-6",
+      "candidate_count": 329,
+      "selected_score": 21,
+      "optimal_score": 22,
+      "optimal_top1": false,
+      "point_ratio": 0.9545454545454546,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200288-7",
+      "candidate_count": 294,
+      "selected_score": 42,
+      "optimal_score": 42,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200289-8",
+      "candidate_count": 253,
+      "selected_score": 24,
+      "optimal_score": 24,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200290-9",
+      "candidate_count": 217,
+      "selected_score": 23,
+      "optimal_score": 24,
+      "optimal_top1": false,
+      "point_ratio": 0.9583333333333334,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200291-10",
+      "candidate_count": 137,
+      "selected_score": 55,
+      "optimal_score": 55,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200292-11",
+      "candidate_count": 146,
+      "selected_score": 21,
+      "optimal_score": 21,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200293-12",
+      "candidate_count": 166,
+      "selected_score": 30,
+      "optimal_score": 30,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200294-13",
+      "candidate_count": 1839,
+      "selected_score": 90,
+      "optimal_score": 90,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200295-14",
+      "candidate_count": 165,
+      "selected_score": 40,
+      "optimal_score": 40,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200296-6",
+      "candidate_count": 208,
+      "selected_score": 22,
+      "optimal_score": 22,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200297-7",
+      "candidate_count": 185,
+      "selected_score": 43,
+      "optimal_score": 43,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200298-8",
+      "candidate_count": 338,
+      "selected_score": 30,
+      "optimal_score": 30,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200299-9",
+      "candidate_count": 204,
+      "selected_score": 32,
+      "optimal_score": 32,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200300-10",
+      "candidate_count": 794,
+      "selected_score": 28,
+      "optimal_score": 28,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200301-11",
+      "candidate_count": 867,
+      "selected_score": 28,
+      "optimal_score": 28,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200302-12",
+      "candidate_count": 109,
+      "selected_score": 36,
+      "optimal_score": 36,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200303-13",
+      "candidate_count": 2140,
+      "selected_score": 80,
+      "optimal_score": 80,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200304-14",
+      "candidate_count": 612,
+      "selected_score": 49,
+      "optimal_score": 49,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200305-6",
+      "candidate_count": 182,
+      "selected_score": 28,
+      "optimal_score": 28,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200306-7",
+      "candidate_count": 125,
+      "selected_score": 26,
+      "optimal_score": 26,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200307-8",
+      "candidate_count": 57,
+      "selected_score": 26,
+      "optimal_score": 26,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200308-9",
+      "candidate_count": 404,
+      "selected_score": 81,
+      "optimal_score": 81,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200309-10",
+      "candidate_count": 118,
+      "selected_score": 19,
+      "optimal_score": 19,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200310-11",
+      "candidate_count": 312,
+      "selected_score": 48,
+      "optimal_score": 48,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200311-12",
+      "candidate_count": 125,
+      "selected_score": 19,
+      "optimal_score": 19,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200312-13",
+      "candidate_count": 108,
+      "selected_score": 46,
+      "optimal_score": 46,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200313-14",
+      "candidate_count": 244,
+      "selected_score": 24,
+      "optimal_score": 24,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200314-6",
+      "candidate_count": 449,
+      "selected_score": 37,
+      "optimal_score": 40,
+      "optimal_top1": false,
+      "point_ratio": 0.925,
+      "optimal_rank": 2,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200315-7",
+      "candidate_count": 93,
+      "selected_score": 27,
+      "optimal_score": 27,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200316-8",
+      "candidate_count": 42,
+      "selected_score": 22,
+      "optimal_score": 22,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200317-9",
+      "candidate_count": 309,
+      "selected_score": 24,
+      "optimal_score": 24,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200318-10",
+      "candidate_count": 200,
+      "selected_score": 36,
+      "optimal_score": 36,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200319-11",
+      "candidate_count": 229,
+      "selected_score": 63,
+      "optimal_score": 63,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200320-12",
+      "candidate_count": 175,
+      "selected_score": 39,
+      "optimal_score": 39,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200321-13",
+      "candidate_count": 325,
+      "selected_score": 37,
+      "optimal_score": 37,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200322-14",
+      "candidate_count": 231,
+      "selected_score": 23,
+      "optimal_score": 23,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200323-6",
+      "candidate_count": 302,
+      "selected_score": 22,
+      "optimal_score": 22,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200324-7",
+      "candidate_count": 336,
+      "selected_score": 44,
+      "optimal_score": 44,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200325-8",
+      "candidate_count": 31,
+      "selected_score": 35,
+      "optimal_score": 35,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200326-9",
+      "candidate_count": 981,
+      "selected_score": 74,
+      "optimal_score": 74,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200327-10",
+      "candidate_count": 94,
+      "selected_score": 13,
+      "optimal_score": 13,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200328-11",
+      "candidate_count": 52,
+      "selected_score": 17,
+      "optimal_score": 17,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200329-12",
+      "candidate_count": 282,
+      "selected_score": 32,
+      "optimal_score": 32,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200330-13",
+      "candidate_count": 42,
+      "selected_score": 33,
+      "optimal_score": 33,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200331-14",
+      "candidate_count": 207,
+      "selected_score": 26,
+      "optimal_score": 26,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200332-6",
+      "candidate_count": 133,
+      "selected_score": 22,
+      "optimal_score": 22,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200333-7",
+      "candidate_count": 211,
+      "selected_score": 21,
+      "optimal_score": 21,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    },
+    {
+      "board_id": "train-1200334-8",
+      "candidate_count": 230,
+      "selected_score": 32,
+      "optimal_score": 32,
+      "optimal_top1": true,
+      "point_ratio": 1.0,
+      "optimal_rank": 1,
+      "recall_at_32": true
+    }
+  ]
+}

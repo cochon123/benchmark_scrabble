@@ -5,6 +5,7 @@ import { eyebrowClass, navRowClass, secondaryButtonClass, shellHeaderClass, shel
 
 const publicLinks = [
   { href: "/", label: "Benchmark" },
+  { href: "/report", label: "Experiment report" },
   { href: "/dataset", label: "Dataset" },
 ];
 

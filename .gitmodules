@@ -1,0 +1,4 @@
+[submodule "data/quackle/src"]
+	path = data/quackle/src
+	url = https://github.com/quackle/quackle.git
+

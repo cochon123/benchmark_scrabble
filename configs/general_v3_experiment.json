@@ -1,0 +1,76 @@
+{
+  "name": "Scrabble generalization run v3",
+  "status": "clean-corpus-ready-gpu-training-not-launched",
+  "objective": "Improve legal and optimal move selection on unseen Scrabble boards without using benchmark boards for training or checkpoint selection.",
+  "base_model": "Qwen/Qwen3-4B-Thinking-2507",
+  "data": {
+    "seed_start": 500000,
+    "games": 1200,
+    "shards": 12,
+    "games_per_shard": 100,
+    "min_ply": 0,
+    "max_ply": 14,
+    "candidate_limit": 5,
+    "split_unit": "complete self-play game",
+    "official_benchmark_usage": "one final evaluation after checkpoint selection only",
+    "expected_train_positions": 14400,
+    "expected_train_records_after_auxiliary_tasks": 21600,
+    "actual": {
+      "games": 1192,
+      "positions": 17876,
+      "train_positions": 14277,
+      "validation_positions": 1710,
+      "test_positions": 1889,
+      "train_records_before_hard_negatives": 21429,
+      "train_positions_sha256": "d5aa2c59be8b42e79365b8c414b1939f4ae60db3f0e3809b6196cc674f7224d3",
+      "train_jsonl_sha256": "b87fa9a9aa42328a6964cabd50818e1eacb42674e99ffb43ea183cc88516cc93",
+      "max_train_tokens": 1445,
+      "train_records_over_4096_tokens": 0,
+      "token_audit_sha256": "99261b1c875bc23d76bd2e8909a7e6183923e151b35c0a041d87c97d5001bc5d",
+      "audit_passed": true
+    }
+  },
+  "representation": {
+    "board": "dense coordinate-labelled 15x15 grid",
+    "move_targets": "verifier-derived candidate comparisons and exact premium-aware score traces",
+    "audit_task_rate": 0.5,
+    "transpose_rate": 0.5,
+    "on_policy_negatives": "collect only on the train split; never mine validation, test, or official benchmark boards"
+  },
+  "training": {
+    "method": "completion-only QLoRA SFT",
+    "fresh_from_base": true,
+    "reason": "avoid inheriting the v2 adapter's strong invalid-placement behavior",
+    "max_length": 4096,
+    "epochs": 1,
+    "learning_rate": 0.00005,
+    "batch_size": 1,
+    "gradient_accumulation": 8,
+    "lora_rank": 16,
+    "lora_alpha": 32,
+    "json_loss_weight": 2.0,
+    "placement_loss_weight": 4.0,
+    "checkpoint_every_steps": 100,
+    "segment_steps": 100,
+    "seed": 3407
+  },
+  "recommended_hardware": {
+    "provider": "Hugging Face Jobs",
+    "flavor": "l40sx1",
+    "accelerator": "1x L40S 48 GB",
+    "listed_cost_per_hour_usd_on_2026_08_02": 1.8
+  },
+  "checkpoint_selection": {
+    "allowed_data": "validation split and its predesignated selection subset",
+    "primary": "validation completion loss",
+    "secondary": [
+      "legal_move_pct",
+      "cumulative_legal_pct_after_attempt_2",
+      "score_pct",
+      "optimal_given_legal_pct",
+      "mean_absolute_score_claim_error"
+    ],
+    "test_usage": "once after selection",
+    "official_usage": "once after all decisions are frozen"
+  }
+}

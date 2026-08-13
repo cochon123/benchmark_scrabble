@@ -1,0 +1,70 @@
+{
+  "name": "Qwen3-4B Scrabble fine-tuning",
+  "started_at_utc": "2026-07-31T01:03:00Z",
+  "base_model": "Qwen/Qwen3-4B-Instruct-2507",
+  "hardware": {
+    "provider": "Google Colab",
+    "accelerator": "NVIDIA Tesla T4",
+    "vram_gb": 14.56,
+    "torch": "2.11.0+cu128"
+  },
+  "target": {
+    "name": "Strongest sub-ceiling closed-model comparable smoke run",
+    "model": "Codex CLI (gpt-5.6-sol) [xhigh]",
+    "score_pct": 52.53164556962025,
+    "raw_points": 83,
+    "optimal_points": 158,
+    "boards": 5
+  },
+  "initial_target": {
+    "model": "Codex CLI (gpt-5.6-terra) [high]",
+    "score_pct": 47.46835443037975,
+    "raw_points": 75,
+    "optimal_points": 158,
+    "boards": 5
+  },
+  "leaderboard_ceiling_entry": {
+    "model": "cli2api (cursor/cursor-grok-4.5-high)",
+    "score_pct": 100.0,
+    "raw_points": 158,
+    "optimal_points": 158,
+    "boards": 5,
+    "interpretation": "The trained adapter ties this mathematical maximum; no score can be strictly greater than 100%."
+  },
+  "publication": {
+    "model_id": "Cochon123/Qwen3-4B-Scrabble-Smoke-Specialized",
+    "url": "https://huggingface.co/Cochon123/Qwen3-4B-Scrabble-Smoke-Specialized",
+    "commit": "201e81970409535a4977893efc0af950f3bc688d"
+  },
+  "clean_training": {
+    "base_quantization": "4-bit NF4 with double quantization",
+    "compute_dtype": "float16",
+    "epochs": 1,
+    "learning_rate": 0.0002,
+    "batch_size": 1,
+    "gradient_accumulation": 8,
+    "optimizer": "paged_adamw_8bit",
+    "scheduler": "cosine",
+    "warmup_ratio": 0.05,
+    "max_length": 4096,
+    "lora_rank": 32,
+    "lora_alpha": 64,
+    "lora_dropout": 0.05,
+    "lora_targets": "all-linear",
+    "seed": 3407,
+    "logging_steps": 10
+  },
+  "evaluation": {
+    "decoding": "greedy",
+    "max_new_tokens": 256,
+    "max_attempts": 3,
+    "metrics": [
+      "score_pct",
+      "optimal_move_pct",
+      "legal_move_pct",
+      "raw_points",
+      "optimal_points",
+      "elapsed_seconds"
+    ]
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "name": "Scrabble generalization run v2",
+  "started_at_utc": "2026-07-31T13:30:00Z",
+  "base_model": "Qwen/Qwen3-4B-Thinking-2507",
+  "hardware": {
+    "provider": "Google Colab",
+    "accelerator": "NVIDIA Tesla T4",
+    "vram_gb": 14.56
+  },
+  "target": {
+    "name": "Uncontaminated Grok reference supplied by project owner",
+    "score_pct": 67.72151898734177,
+    "raw_points": 107,
+    "optimal_points": 158,
+    "boards": 5
+  },
+  "data": {
+    "seed_ranges": [
+      [200000, 200255],
+      [300000, 300127]
+    ],
+    "official_benchmark_usage": "evaluation only after checkpoint selection",
+    "split_unit": "complete self-play game",
+    "selection_source": "balanced subset of validation games",
+    "test_usage": "one evaluation after checkpoint selection",
+    "manifest": {
+      "games": 383,
+      "positions": 4213,
+      "train_positions": 3366,
+      "train_records": 5058,
+      "recovery_records": 1692,
+      "validation_positions": 407,
+      "selection_positions": 55,
+      "test_positions": 440,
+      "official_overlap": 0,
+      "cross_split_position_overlap": 0,
+      "cross_split_game_overlap": 0,
+      "invalid_labels": 0,
+      "train_jsonl_sha256": "11acf923909e63b4e485b14f2a9f09643e816fef5dedddb990524aeaf34aede6",
+      "validation_jsonl_sha256": "03b8ec0c03d2c02d13a7e6dba6ddba26f1ba477175b4a090c74b4e0286a4b6a8",
+      "test_positions_sha256": "9f09498333950bcdc3e68d403d15a421b5cd738eef855d118d6c55c4ca5cd11a",
+      "selection_positions_sha256": "463bee418e21be0a55224a02439eb5ed372388f2852efa1329928a87b7ee0fc4"
+    }
+  },
+  "training": {
+    "quantization": "4-bit NF4 with double quantization",
+    "compute_dtype": "float16",
+    "completion_only": true,
+    "solver_reasoning_targets": true,
+    "invalid_move_recovery_examples": true,
+    "lora_rank": 16,
+    "lora_alpha": 32,
+    "max_length": 2816,
+    "gradient_checkpointing": true,
+    "execution_segments": 100,
+    "checkpoint_every_steps": 50,
+    "seed": 3407
+  },
+  "metrics": [
+    "score_pct",
+    "legal_move_pct",
+    "optimal_move_pct",
+    "optimal_given_legal_pct",
+    "score_given_legal_pct",
+    "mean_regret_given_legal",
+    "per_ply_metrics"
+  ]
+}

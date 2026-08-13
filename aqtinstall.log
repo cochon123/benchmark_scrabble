@@ -1,0 +1,50 @@
+2026-08-06 00:21:59,159 - aqt.helper - DEBUG - helper 131654526003008 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/linux_x64/desktop/qt6_683/qt6_683/Updates.xml.sha256
+2026-08-06 00:22:35,953 - aqt.main - INFO - installer 131111770662720 aqtinstall(aqt) v3.3.0 on Python 3.11.15 [CPython Clang 22.1.3 ]
+2026-08-06 00:22:35,958 - aqt.helper - DEBUG - helper 131111770662720 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/linux_x64/desktop/qt6_683/qt6_683/Updates.xml.sha256
+2026-08-06 00:22:38,061 - aqt.helper - DEBUG - helper 131111770662720 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/linux_x64/extensions/qtwebengine/683/x86_64/Updates.xml.sha256
+2026-08-06 00:22:39,774 - aqt.archives - INFO - archives 131111770662720 Found extension qtwebengine
+2026-08-06 00:22:39,780 - aqt.helper - DEBUG - helper 131111770662720 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/linux_x64/extensions/qtpdf/683/x86_64/Updates.xml.sha256
+2026-08-06 00:22:41,730 - aqt.archives - INFO - archives 131111770662720 Found extension qtpdf
+2026-08-06 00:23:02,902 - aqt.helper - DEBUG - helper 127189855725376 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/linux_x64/desktop/qt6_683/qt6_683/qt.qt6.683.linux_gcc_64/6.8.3-0-202503201345qtbase-Linux-RHEL_8_10-GCC-Linux-RHEL_8_10-X86_64.7z.sha256
+2026-08-06 00:23:03,982 - aqt.helper - INFO - helper 127189855725376 Downloading qtbase...
+2026-08-06 00:23:03,984 - aqt.installer - DEBUG - installer 127189855725376 Download URL: https://download.qt.io/online/qtsdkrepository/linux_x64/desktop/qt6_683/qt6_683/qt.qt6.683.linux_gcc_64/6.8.3-0-202503201345qtbase-Linux-RHEL_8_10-GCC-Linux-RHEL_8_10-X86_64.7z
+2026-08-06 00:23:04,918 - aqt.helper - DEBUG - helper 127189855725376 Asked to redirect(302) to: https://qt.mirror.constant.com/online/qtsdkrepository/linux_x64/desktop/qt6_683/qt6_683/qt.qt6.683.linux_gcc_64/6.8.3-0-202503201345qtbase-Linux-RHEL_8_10-GCC-Linux-RHEL_8_10-X86_64.7z
+2026-08-06 00:23:04,925 - aqt.helper - INFO - helper 127189855725376 Redirected: qt.mirror.constant.com
+2026-08-06 00:23:33,754 - aqt.installer - INFO - installer 127189855725376 Finished installation of qtbase-Linux-RHEL_8_10-GCC-Linux-RHEL_8_10-X86_64.7z in 30.96326183
+2026-08-06 00:23:34,995 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/pkgconfig/Qt6Xml.pc
+2026-08-06 00:23:34,995 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/pkgconfig/Qt6Widgets.pc
+2026-08-06 00:23:34,996 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/pkgconfig/Qt6Test.pc
+2026-08-06 00:23:34,996 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/pkgconfig/Qt6Sql.pc
+2026-08-06 00:23:35,002 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/pkgconfig/Qt6PrintSupport.pc
+2026-08-06 00:23:35,006 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/pkgconfig/Qt6Platform.pc
+2026-08-06 00:23:35,010 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/pkgconfig/Qt6OpenGLWidgets.pc
+2026-08-06 00:23:35,013 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/pkgconfig/Qt6OpenGL.pc
+2026-08-06 00:23:35,015 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/pkgconfig/Qt6Network.pc
+2026-08-06 00:23:35,016 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/pkgconfig/Qt6Gui.pc
+2026-08-06 00:23:35,020 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/pkgconfig/Qt6DBus.pc
+2026-08-06 00:23:35,025 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/pkgconfig/Qt6Core.pc
+2026-08-06 00:23:35,027 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/pkgconfig/Qt6Concurrent.pc
+2026-08-06 00:23:35,035 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/libQt6Xml.prl
+2026-08-06 00:23:35,035 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/libQt6XcbQpa.prl
+2026-08-06 00:23:35,036 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/libQt6Widgets.prl
+2026-08-06 00:23:35,036 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/libQt6Test.prl
+2026-08-06 00:23:35,044 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/libQt6Sql.prl
+2026-08-06 00:23:35,044 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/libQt6PrintSupport.prl
+2026-08-06 00:23:35,045 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/libQt6OpenGLWidgets.prl
+2026-08-06 00:23:35,045 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/libQt6OpenGL.prl
+2026-08-06 00:23:35,046 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/libQt6Network.prl
+2026-08-06 00:23:35,046 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/libQt6KmsSupport.prl
+2026-08-06 00:23:35,047 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/libQt6InputSupport.prl
+2026-08-06 00:23:35,053 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/libQt6Gui.prl
+2026-08-06 00:23:35,054 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/libQt6FbSupport.prl
+2026-08-06 00:23:35,054 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/libQt6ExamplesAssetDownloader.prl
+2026-08-06 00:23:35,055 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/libQt6ExampleIcons.prl
+2026-08-06 00:23:35,055 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/libQt6EglFsKmsSupport.prl
+2026-08-06 00:23:35,055 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/libQt6EglFsKmsGbmSupport.prl
+2026-08-06 00:23:35,062 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/libQt6EglFSDeviceIntegration.prl
+2026-08-06 00:23:35,063 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/libQt6DeviceDiscoverySupport.prl
+2026-08-06 00:23:35,064 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/libQt6DBus.prl
+2026-08-06 00:23:35,064 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/libQt6Core.prl
+2026-08-06 00:23:35,064 - aqt.updater - INFO - updater 131111770662720 Patching /tmp/scrabble-v8-qt/6.8.3/gcc_64/lib/libQt6Concurrent.prl
+2026-08-06 00:23:35,071 - aqt.main - INFO - installer 131111770662720 Finished installation
+2026-08-06 00:23:35,071 - aqt.main - INFO - installer 131111770662720 Time elapsed: 59.11815164 second
