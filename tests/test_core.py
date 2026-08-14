@@ -22,6 +22,50 @@ def lexicon_from_words(words: list[str]) -> Lexicon:
 
 
 class ParserTests(unittest.TestCase):
+    def test_cli2api_capabilities_default_to_disabled(self) -> None:
+        from scrabble_bench.config import cli2api_capabilities_enabled
+
+        with patch.dict("os.environ", {}, clear=True):
+            self.assertFalse(cli2api_capabilities_enabled())
+
+    def test_cli2api_capabilities_are_explicitly_opt_in(self) -> None:
+        from scrabble_bench.config import cli2api_capabilities_enabled
+
+        with patch.dict("os.environ", {"CLI2API_ENABLE_CAPABILITIES": "true"}, clear=True):
+            self.assertTrue(cli2api_capabilities_enabled())
+
+    def test_cli2api_capabilities_reject_invalid_values(self) -> None:
+        from scrabble_bench.config import cli2api_capabilities_enabled
+
+        with patch.dict("os.environ", {"CLI2API_ENABLE_CAPABILITIES": "maybe"}, clear=True):
+            with self.assertRaises(RuntimeError):
+                cli2api_capabilities_enabled()
+
+    def test_cli2api_request_is_text_only_by_default(self) -> None:
+        from scrabble_bench.openrouter import _cli2api_request_payload
+
+        payload = _cli2api_request_payload(
+            "cursor/grok-4.6",
+            [{"role": "user", "content": "hello"}],
+            capabilities_enabled=False,
+        )
+        self.assertEqual(payload["tools"], [])
+        self.assertEqual(payload["tool_choice"], "none")
+        self.assertIn("Text-only benchmark mode", payload["messages"][0]["content"])
+
+    def test_cli2api_request_can_opt_in_to_capabilities(self) -> None:
+        from scrabble_bench.openrouter import _cli2api_request_payload
+
+        messages = [{"role": "user", "content": "hello"}]
+        payload = _cli2api_request_payload(
+            "cursor/grok-4.6",
+            messages,
+            capabilities_enabled=True,
+        )
+        self.assertNotIn("tools", payload)
+        self.assertNotIn("tool_choice", payload)
+        self.assertEqual(payload["messages"], messages)
+
     def test_parses_fenced_json(self) -> None:
         payload = parse_tool_payload(
             '```json\n{"tool":"play_move","arguments":{"placements":[{"row":7,"col":7,"letter":"A"}]}}\n```'
