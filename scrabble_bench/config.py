@@ -56,6 +56,25 @@ def get_cli2api_token() -> str | None:
     return os.environ.get("CLI2API_TOKEN") or os.environ.get("OPENROUTER_API_KEY")
 
 
+def cli2api_capabilities_enabled() -> bool:
+    """Return whether cli2api may expose tools or other agent capabilities.
+
+    The safe default is text-only generation. This is intentionally opt-in so
+    a benchmark run cannot accidentally give a gateway-backed agent access to
+    the repository, shell, web, or other tools.
+    """
+    load_env_file()
+    raw_value = os.environ.get("CLI2API_ENABLE_CAPABILITIES", "false").strip().lower()
+    if raw_value in {"1", "true", "yes", "on"}:
+        return True
+    if raw_value in {"0", "false", "no", "off", ""}:
+        return False
+    raise RuntimeError(
+        "CLI2API_ENABLE_CAPABILITIES must be a boolean: "
+        "true/false, 1/0, yes/no, or on/off."
+    )
+
+
 def get_max_active_runs() -> int:
     load_env_file()
     raw_value = os.environ.get("MAX_ACTIVE_RUNS", "2")

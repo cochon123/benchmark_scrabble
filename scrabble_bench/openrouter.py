@@ -583,13 +583,13 @@ def _cli2api_chat_completion(
         "HTTP-Referer": "http://localhost:3000",
         "X-Title": "Scrabble LLM Benchmark",
     }
-    payload: dict[str, Any] = {
-        "model": api_model,
-        "temperature": 0,
-        "messages": messages,
-        "stream": True,
-        "stream_options": {"include_usage": True},
-    }
+    from .config import cli2api_capabilities_enabled
+
+    payload = _cli2api_request_payload(
+        api_model,
+        messages,
+        capabilities_enabled=cli2api_capabilities_enabled(),
+    )
     url = f"{base}/chat/completions"
     start = time.perf_counter()
     request = urllib.request.Request(
@@ -710,3 +710,36 @@ def _cli2api_chat_completion(
             "summary": _summarize_trace(trace_events, latency_ms),
         },
     }
+
+
+def _cli2api_request_payload(
+    model: str,
+    messages: list[dict[str, str]],
+    *,
+    capabilities_enabled: bool,
+) -> dict[str, Any]:
+    request_messages = messages
+    if not capabilities_enabled:
+        request_messages = [
+            {
+                "role": "system",
+                "content": (
+                    "Text-only benchmark mode is active. Do not use tools, files, "
+                    "shell commands, web search, network lookups, code execution, "
+                    "or external references. Use only the board and rack in the "
+                    "conversation and return the requested text response."
+                ),
+            },
+            *messages,
+        ]
+    payload: dict[str, Any] = {
+        "model": model,
+        "temperature": 0,
+        "messages": request_messages,
+        "stream": True,
+        "stream_options": {"include_usage": True},
+    }
+    if not capabilities_enabled:
+        payload["tools"] = []
+        payload["tool_choice"] = "none"
+    return payload
