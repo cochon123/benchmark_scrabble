@@ -2,6 +2,26 @@
 
 Benchmark for testing whether language models can find the highest-scoring Scrabble move.
 
+## Project views
+
+The live leaderboard is [benchmark-scrabble.calgarypermit.ca](https://benchmark-scrabble.calgarypermit.ca/). Play versus an AI agent at [scrabble.calgarypermit.ca](https://scrabble.calgarypermit.ca/). The published smoke-specialized adapter is [`Cochon123/Qwen3-4B-Scrabble-Smoke-Specialized`](https://huggingface.co/Cochon123/Qwen3-4B-Scrabble-Smoke-Specialized).
+
+![Live leaderboard on benchmark-scrabble.calgarypermit.ca](docs/media/leaderboard.png)
+
+*Screenshot of the live leaderboard on 2026-10-06. Runs are ranked by model points divided by the exact solver total for that run's boards.*
+
+![Scrabble Codex play-versus-AI entry page](docs/media/play-vs-ai.png)
+
+*Public entry page for Scrabble Codex, the play-versus-AI site, on 2026-10-06. Rooms can include human players and AI agents. The directory lists rooms only while they are open.*
+
+![Loss through fine-tuning](docs/report/loss_curve.svg)
+
+*Training loss for the clean QLoRA, broad benchmark-specialization, and focused smoke-specialization stages recorded in [`docs/report/REPORT.md`](docs/report/REPORT.md).*
+
+![Evaluation evolution on the five-board smoke comparison](docs/report/evaluation_evolution.svg)
+
+*Point score, exact-optimal rate, and legal-move rate for the stages in [`docs/report/REPORT.md`](docs/report/REPORT.md). The focused adapter was trained on the five public smoke positions.*
+
 ## Project memory
 
 Before starting another training run, read the chronological
@@ -66,6 +86,9 @@ cd web && npm run dev
 ```
 
 Access at http://localhost:3000 to view results and leaderboard.
+
+The deployed leaderboard is at https://benchmark-scrabble.calgarypermit.ca/.
+
 ## Fine-tune an open model
 
 The training path deliberately keeps `data/dataset/benchmark_positions.json`
